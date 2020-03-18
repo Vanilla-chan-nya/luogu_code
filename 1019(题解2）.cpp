@@ -3,20 +3,20 @@ using namespace std;
 string str[20];
 int use[20], length = 0, n;
 int canlink(string str1, string str2) {
-    for(int i = 1; i < min(str1.length(), str2.length()); i++) {//ÖØµş³¤¶È´Ó1¿ªÊ¼£¬Ö±µ½×î¶ÌµÄ×Ö·û´®³¤¶È-1£¨ÒòÎª²»ÄÜ°üº¬£©
+    for(int i = 1; i < min(str1.length(), str2.length()); i++) {//é‡å é•¿åº¦ä»1å¼€å§‹ï¼Œç›´åˆ°æœ€çŸ­çš„å­—ç¬¦ä¸²é•¿åº¦-1ï¼ˆå› ä¸ºä¸èƒ½åŒ…å«ï¼‰
         int flag = 1;
         for(int j = 0; j < i; j++)
-            if(str1[str1.length() - i + j] != str2[j]) flag = 0;//Öğ¸ö¼ì²âÊÇ·ñÏàµÈ
-        if(flag) return i;//¼ì²âÍê±ÏÏàµÈÔòÁ¢¼´return
+            if(str1[str1.length() - i + j] != str2[j]) flag = 0;//é€ä¸ªæ£€æµ‹æ˜¯å¦ç›¸ç­‰
+        if(flag) return i;//æ£€æµ‹å®Œæ¯•ç›¸ç­‰åˆ™ç«‹å³return
     }
-    return 0;//ÎŞÖØµş²¿·Ö£¬·µ»Ø0
+    return 0;//æ— é‡å éƒ¨åˆ†ï¼Œè¿”å›0
 }
 void solve(string strnow, int lengthnow) {
-    length = max(lengthnow, length);//¸üĞÂ×î´ó³¤¶È
+    length = max(lengthnow, length);//æ›´æ–°æœ€å¤§é•¿åº¦
     for(int i = 0; i < n; i++) {
-        if(use[i] >= 2) continue;//¸Ã×Ö·û´®Ê¹ÓÃ´ÎÊıĞèÒªĞ¡ÓÚ2
-        int c = canlink(strnow, str[i]);//»ñÈ¡ÖØµş³¤¶È
-        if(c > 0) {//ÓĞÖØµş²¿·Ö¾Í¿ªÊ¼dfs
+        if(use[i] >= 2) continue;//è¯¥å­—ç¬¦ä¸²ä½¿ç”¨æ¬¡æ•°éœ€è¦å°äº2
+        int c = canlink(strnow, str[i]);//è·å–é‡å é•¿åº¦
+        if(c > 0) {//æœ‰é‡å éƒ¨åˆ†å°±å¼€å§‹dfs
             use[i]++;
             solve(str[i], lengthnow + str[i].length() - c);
             use[i]--;
@@ -25,8 +25,8 @@ void solve(string strnow, int lengthnow) {
 }
 main() {
     cin >> n;
-    for(int i = 0; i <= n; i++) use[i] = 0, cin >> str[i];//str[n]Îª¿ªÊ¼×Ö·û 
-    solve(' '+str[n], 1);//ÓĞ±ØÒª½âÊÍÒ»ÏÂ¿ªÊ¼½×¶Î¡£ÎªÁËÖ¸¶¨µÚÒ»¸ö×Ö·û£¬¶øÇÒÒòÎªcanlinkĞèÒªÖØµş²¿·ÖĞ¡ÓÚ×î¶Ì³¤¶È-1£¬ËùÒÔÒª´ÓÇ°ÃæÌí¼ÓÒ»¸öÎŞÒâÒå³ä³¤¶ÈµÄ¡® ¡¯¡£ÕâÑù¾ÍÇ¿ÖÆÁËcanlinkº¯Êı±È½Ï×îºóÒ»Î»¡£
+    for(int i = 0; i <= n; i++) use[i] = 0, cin >> str[i];//str[n]ä¸ºå¼€å§‹å­—ç¬¦ 
+    solve(' '+str[n], 1);//æœ‰å¿…è¦è§£é‡Šä¸€ä¸‹å¼€å§‹é˜¶æ®µã€‚ä¸ºäº†æŒ‡å®šç¬¬ä¸€ä¸ªå­—ç¬¦ï¼Œè€Œä¸”å› ä¸ºcanlinkéœ€è¦é‡å éƒ¨åˆ†å°äºæœ€çŸ­é•¿åº¦-1ï¼Œæ‰€ä»¥è¦ä»å‰é¢æ·»åŠ ä¸€ä¸ªæ— æ„ä¹‰å……é•¿åº¦çš„â€˜ â€™ã€‚è¿™æ ·å°±å¼ºåˆ¶äº†canlinkå‡½æ•°æ¯”è¾ƒæœ€åä¸€ä½ã€‚
     cout << length ;
 }
 

@@ -7,10 +7,10 @@ char f;
 int iqr(int a,int b){//inquire
 	int ccdn=0;//coincidence
 	int flag=0,lena=word[a].size(),lenb=word[b].size();
-	for(int i=1;i<min(lena,lenb);i++)//iÊÇa£¬bµÄÖØºÏ²¿·Ö 
+	for(int i=1;i<min(lena,lenb);i++)//iæ˜¯aï¼Œbçš„é‡åˆéƒ¨åˆ† 
 	{
-		//i!=min(lena,lenb)£¬ÒòÎªÁ½Õß²»ÄÜ°üº¬£¬ËùÒÔ¾Í²»¹ÜÕâÖÖÇé¿öÁË 
-		for(int j=0;j<i;j++)//¶ÔÖØºÏ²¿·ÖÖð¸öµÄ¼ì²é 
+		//i!=min(lena,lenb)ï¼Œå› ä¸ºä¸¤è€…ä¸èƒ½åŒ…å«ï¼Œæ‰€ä»¥å°±ä¸ç®¡è¿™ç§æƒ…å†µäº† 
+		for(int j=0;j<i;j++)//å¯¹é‡åˆéƒ¨åˆ†é€ä¸ªçš„æ£€æŸ¥ 
 		{
 			if(word[a][lena-i+j]!=word[b][j])
 			break;  

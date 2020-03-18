@@ -1,4 +1,4 @@
-//¼ÇÒä»¯ËÑË÷ 
+//è®°å¿†åŒ–æœç´¢ 
 #include<iostream>
 #include<cstring>
 using namespace std;
@@ -6,7 +6,7 @@ int f[1000][1000],a[1000][1000];
 int r;
 int dfs(int x,int y)
 {
-	if(f[x][y]==-1)//-1Îª±ß½ç 
+	if(f[x][y]==-1)//-1ä¸ºè¾¹ç•Œ 
 	{
 		if(x==r)
 			f[x][y]=a[x][y];
@@ -18,8 +18,8 @@ int dfs(int x,int y)
 int main(){
 	cin>>r;
 	memset(f,0,sizeof(f));
-	for(int i=0;i<r;i++)//ĞĞ 
-	for(int j=0;j<i+1;j++)//ÁĞ 
+	for(int i=0;i<r;i++)//è¡Œ 
+	for(int j=0;j<i+1;j++)//åˆ— 
 	{
 		cin>>a[i][j];
 		if(i>=r)

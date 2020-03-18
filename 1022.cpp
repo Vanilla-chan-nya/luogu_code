@@ -1,7 +1,7 @@
 #include<bits/stdc++.h>
 using namespace std;
 string sentence;
-int dl1,dl2,ta;//ÏµÊý&³£ÊýÏî 
+int dl1,dl2,ta;//ç³»æ•°&å¸¸æ•°é¡¹ 
 int xs(int n,int t)
 {
 	if(sentence[n]>='0'&&sentence[n]<='9')
@@ -52,7 +52,7 @@ int main()
 		
 	}
 	cout<<x<<"=";
-	//double»á³öÏÖ-0µÄÇé¿ö£¡
+	//doubleä¼šå‡ºçŽ°-0çš„æƒ…å†µï¼
 	double ans= -dl2/(dl1*1.0);
 	if(ans==-0.000) ans=0.000;
 	printf("%.3lf",ans); 

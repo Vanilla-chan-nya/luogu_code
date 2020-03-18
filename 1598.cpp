@@ -6,16 +6,16 @@ int main(){
 	char tz;
 	while(scanf("%c",&tz)!=EOF)	
 		if(tz>='A'&&tz<='Z') zm[tz-'A'+1]++;
-	//ÕÒ×î¸ßµÄ 
+	//æ‰¾æœ€é«˜çš„ 
 	int maxn=-1; 
 	for(int i=1;i<=26;i++)
 		if(maxn<zm[i])
 			maxn=zm[i];
-	//Ñ­»·´òÓ¡ÐÐ 
+	//å¾ªçŽ¯æ‰“å°è¡Œ 
 	int maxl;
 	for(int h=maxn;h>=1;h--)
 	{
-		//ÕÒÃ¿ÐÐ×îºóÒ»¸ö
+		//æ‰¾æ¯è¡Œæœ€åŽä¸€ä¸ª
 		for(int j=26;j>=1;j--)
 			if(zm[j]>=h) 
 			{

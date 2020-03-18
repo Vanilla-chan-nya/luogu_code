@@ -20,12 +20,12 @@ struct animal{
 	int enemy;
 } ani[50001];
 
-//ÕÒ×æÏÈ 
+//æ‰¾ç¥–å…ˆ 
 int getf(int a)
 {
 	
 }
-//ºÏ²¢ ·µ»ØÊÇ·ñºÏ·¨ 
+//åˆå¹¶ è¿”å›æ˜¯å¦åˆæ³• 
 bool merge(int a,int b)
 {
 	

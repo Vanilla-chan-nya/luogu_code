@@ -1,4 +1,4 @@
-//P1616 ╥Х©Я╣д╡ир╘WA!!!!!!
+//P1616 Г√╞Г▀┌Г └И┤┤Х█╞WA!!!!!!
 #include<bits/stdc++.h>
 
 using namespace std;

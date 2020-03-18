@@ -9,7 +9,7 @@ int rec()
 	{
 		if(t=='a') a++;
 		if(t=='|') return max(a,rec());
-		if(t=='(') a+=rec();//²»ÄÜĞ´³É return a+rec() !
+		if(t=='(') a+=rec();//ä¸èƒ½å†™æˆ return a+rec() !
 		if(t==')') return a;
 	}
 	return a;

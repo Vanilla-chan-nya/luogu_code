@@ -1,7 +1,7 @@
 #include <bits/stdc++.h>
 using namespace std;
-int word_count/*µ¥´ÊÊıÁ¿*/,use[21]/*×Ö·û´®Ê¹ÓÃÇé¿ö*/,line1 = 0,line2 = 0/*×Ö·û´®³¤¶È*/; 
-string word[21],sentence/*×îÖÕ×Ö·û´®*/;
+int word_count/*å•è¯æ•°é‡*/,use[21]/*å­—ç¬¦ä¸²ä½¿ç”¨æƒ…å†µ*/,line1 = 0,line2 = 0/*å­—ç¬¦ä¸²é•¿åº¦*/; 
+string word[21],sentence/*æœ€ç»ˆå­—ç¬¦ä¸²*/;
 int can(string str1){
 	int g=1;
 	for(int i = 1;i < min(str1.size(),sentence.size());i++){
@@ -25,7 +25,7 @@ void dsf(string s1)
 		use[i]++;
 		line1 += ch;
 		for(int j = ch;j<=word[i].size();j++)  news +=word[i].at(j);
-		dsf(s1+news);//¾Í²îÒ»µãÁË£ºÎÊÌâÎ´Öª 
+		dsf(s1+news);//å°±å·®ä¸€ç‚¹äº†ï¼šé—®é¢˜æœªçŸ¥ 
 		use[i]--;
 		line1 -= ch;
 		} 
@@ -37,9 +37,9 @@ void dsf(string s1)
 int main()
 {
 	
-	cin>>word_count;//ÊäÈëµ¥´ÊÊıÁ¿ 
-	for(int i=1;i<=word_count;i++) cin>>word[i];//ÊäÈëµ¥´Ê 
-//	cin>>word[0];//ÊäÈëÆğÊ¼×ÖÄ¸
+	cin>>word_count;//è¾“å…¥å•è¯æ•°é‡ 
+	for(int i=1;i<=word_count;i++) cin>>word[i];//è¾“å…¥å•è¯ 
+//	cin>>word[0];//è¾“å…¥èµ·å§‹å­—æ¯
 	word[0]=getchar();
 	dsf(word[0]);
 	

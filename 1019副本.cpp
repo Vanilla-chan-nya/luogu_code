@@ -1,6 +1,6 @@
 #include <bits/stdc++.h>
 using namespace std;
-int word_count/*µ¥´ÊÊıÁ¿*/,use[21]/*×Ö·û´®Ê¹ÓÃÇé¿ö*/,line = 0,line_end = 0/*×Ö·û´®³¤¶È*/; 
+int word_count/*å•è¯æ•°é‡*/,use[21]/*å­—ç¬¦ä¸²ä½¿ç”¨æƒ…å†µ*/,line = 0,line_end = 0/*å­—ç¬¦ä¸²é•¿åº¦*/; 
 string word[21];
 int can(string str1,string str2){
 	int g=1;
@@ -21,12 +21,12 @@ void dsf(string s1)
 	for(int i=1;i<=word_count;i++)
 	{
 		if(use[i]>=2) continue;
-		int ch = can(s1,word[i]);//Ê¹ÓÃch´æ´¢Á½¸ö×Ö·û´®µÄÏàÍ¬²¿·ÖµÄ³¤¶È 
+		int ch = can(s1,word[i]);//ä½¿ç”¨chå­˜å‚¨ä¸¤ä¸ªå­—ç¬¦ä¸²çš„ç›¸åŒéƒ¨åˆ†çš„é•¿åº¦ 
 		if(ch>0){
 		use[i]++;
 		line += ch;
 		for(int j = ch;j<=word[i].size();j++)  news +=word[i].at(j);
-		dsf(s1+news);//¾Í²îÒ»µãÁË£ºÎÊÌâÎ´Öª 
+		dsf(s1+news);//å°±å·®ä¸€ç‚¹äº†ï¼šé—®é¢˜æœªçŸ¥ 
 		if(line_end<line) line_end = line;
 		use[i]--;
 		line -= ch;
@@ -38,9 +38,9 @@ void dsf(string s1)
 int main()
 {
 	
-	cin>>word_count;//ÊäÈëµ¥´ÊÊıÁ¿ 
-	for(int i=1;i<=word_count;i++) cin>>word[i];//ÊäÈëµ¥´Ê 
-	cin>>word[0];//ÊäÈëÆğÊ¼×ÖÄ¸ 
+	cin>>word_count;//è¾“å…¥å•è¯æ•°é‡ 
+	for(int i=1;i<=word_count;i++) cin>>word[i];//è¾“å…¥å•è¯ 
+	cin>>word[0];//è¾“å…¥èµ·å§‹å­—æ¯ 
 	dsf(word[0]);
 	
 	cout<<line;

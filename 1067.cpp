@@ -13,7 +13,7 @@ int main(){
 			if(k[i]<0) cout<<k[i];
 			continue;
 		} 
-		if(flag){//最高次 
+		if(flag){//鏈�楂樻 
 			flag=0;
 			if(k[i]==1||k[i]==-1) {
 				if(k[i]==1) cout<<"";
@@ -23,7 +23,7 @@ int main(){
 				cout<<k[i];
 			}			
 		}
-		else{//不是最高次 
+		else{//涓嶆槸鏈�楂樻 
 			if(k[i]==1||k[i]==-1) {
 				if(k[i]==1) cout<<"+";
 				if(k[i]==-1) cout<<"-";

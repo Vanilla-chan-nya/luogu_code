@@ -14,18 +14,18 @@ struct number{
 	int len;
 	bool fu;
 	
-	number(){//³õÊ¼»¯ 
+	number(){//åˆå§‹åŒ– 
 		len=fu=0;
 		memset(num,0,sizeof(num));
 	}
 	
-	int updata_len(){//¸üĞÂ³¤¶È 
+	int updata_len(){//æ›´æ–°é•¿åº¦ 
 		for(int i=maxn-1;i>=0;i--) if(num[i]) return len=i+1;
 		return len=0;
 	}
 	
 	//	/*
-	number operator= (int x){//ÒşÊ½×ª»» 
+	number operator= (int x){//éšå¼è½¬æ¢ 
 		fu=(x<0);
 		num[0]=abs(x);
 		if(x>9) carry_bit();
@@ -34,7 +34,7 @@ struct number{
 	}
 //	*/
 	/*
-	number (int x){//ÓĞbugµÄ¹¹Ôìº¯Êı ÔİÊ±ÓÃÖØÔØ=Ìæ´ú 
+	number (int x){//æœ‰bugçš„æ„é€ å‡½æ•° æš‚æ—¶ç”¨é‡è½½=æ›¿ä»£ 
 		fu=(x<0);
 		num[0]=abs(x);
 		if(x>9) carry_bit();
@@ -84,7 +84,7 @@ struct number{
 		for(int i=len;i>0;i--){
 			if(num[i]) flag=1;
 			if(num[i]>9) carry_bit(); 
-			if(flag) putchar(num[i]+'0');//putchar¼ÓËÙ 
+			if(flag) putchar(num[i]+'0');//putcharåŠ é€Ÿ 
 		}
 		putchar(num[0]+'0');
 	}
@@ -99,13 +99,13 @@ struct number{
 		}
 		for(int i=max(len,x.len);i>=0;i--)
 		{
-			if(num[i]>x.num[i]) return !fu;//´óÓÚ (1)
-			if(num[i]<x.num[i]) return fu;//Ğ¡ÓÚ (0)
+			if(num[i]>x.num[i]) return !fu;//å¤§äº (1)
+			if(num[i]<x.num[i]) return fu;//å°äº (0)
 		}
-		return 2;//ÏàµÈ 
+		return 2;//ç›¸ç­‰ 
 	}
 	
-	//ÀûÓÃcompare()ÖØÔØ±È½ÏÔËËã·û 
+	//åˆ©ç”¨compare()é‡è½½æ¯”è¾ƒè¿ç®—ç¬¦ 
 	 
 	bool operator> (number x){
 		return (compare(x)==1);

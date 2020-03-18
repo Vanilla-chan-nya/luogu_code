@@ -1,6 +1,6 @@
-#include<iostream>//²»ÏëOIÒ»³¡¿Õ£¬Ç§Íò±ğÓÃÍòÄÜÍ·
-#include<algorithm>//¿ìÅÅsort()
-#include<cstdio>//ÄÜ²»ÓÃcin¾Í²»ÓÃ
+#include<iostream>//ä¸æƒ³OIä¸€åœºç©ºï¼Œåƒä¸‡åˆ«ç”¨ä¸‡èƒ½å¤´
+#include<algorithm>//å¿«æ’sort()
+#include<cstdio>//èƒ½ä¸ç”¨cinå°±ä¸ç”¨
 #include<cstring>
 #include<windows.h>
 #define IL inline
@@ -19,7 +19,7 @@ int main()
 	cin>>all;
 	t=all;
 	a:
-	cout<<"making rand¡­¡­\n";
+	cout<<"making randâ€¦â€¦\n";
 	system("2525rand.exe");
 	cout<<"run STL\n";
 	system("2525.exe");

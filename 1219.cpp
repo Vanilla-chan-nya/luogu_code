@@ -2,10 +2,10 @@
 using namespace std;
 short n;
 short lie[15];
-short xy[14][14]={0};//ÆåÅÌÃæ×´Ì¬ 
+short xy[14][14]={0};//æ£‹ç›˜é¢çŠ¶æ€ 
 int jiefa=0;
 
-void queen(int i)//iÊÇĞĞÊı 
+void queen(int i)//iæ˜¯è¡Œæ•° 
 {
 	
 		if(i==n+1) //output
@@ -18,21 +18,21 @@ void queen(int i)//iÊÇĞĞÊı
 	return;}
 	
 	
-	for(int j=1;j<=n;j++)//jÊÇÁĞÊı 
+	for(int j=1;j<=n;j++)//jæ˜¯åˆ—æ•° 
 	if(  (!xy[0][j])&& (!xy[1][i+j]) &&(!xy[2][i-j+n])  ){ 
       lie[i]=j;
       xy[0][j] = 1;
       xy[1][i+j] = 1;
       xy[2][i-j+n] = 1;
-      //½øÈëÒ»²ã»ØËİ 
+      //è¿›å…¥ä¸€å±‚å›æº¯ 
       queen(i+1);
-      //ÍË³öÒ»²ã»ØËİ 
+      //é€€å‡ºä¸€å±‚å›æº¯ 
       lie[i]=0;
       xy[0][j] = 0;
       xy[1][i+j] = 0;
       xy[2][i-j+n] = 0;
     }
-    /*if(  (!xy[0][j])&& (!xy[1][i+j]) &&(!xy[2][i-j+n])  ){ // ÅĞ¶Ï¹Ø¼ü
+    /*if(  (!xy[0][j])&& (!xy[1][i+j]) &&(!xy[2][i-j+n])  ){ // åˆ¤æ–­å…³é”®
       lie[i]=j;
       xy[0][j] = 1;
       xy[1][i+j] = 1;
