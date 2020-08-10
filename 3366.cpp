@@ -11,7 +11,7 @@ int n,m,f[5001],size[5001],ans,yet;
 int getf(int a)
 {
 	if(f[a]==a) return a;
-	return f[a]=getf(f[a]);//è·¯å¾„å‹ç¼© 
+	return f[a]=getf(f[a]);//Â·¾¶Ñ¹Ëõ 
 }
 void merge(int a,int b)
 {

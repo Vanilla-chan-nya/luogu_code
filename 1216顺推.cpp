@@ -1,4 +1,4 @@
-//é¡ºæŽ¨ 66
+//Ë³ÍÆ 66
 #include<iostream>
 #include<cstring>
 using namespace std;
@@ -8,8 +8,8 @@ int main(){
 	cin>>r;
 	int triangle[r][r];
 	memset(triangle,0,sizeof(triangle));
-	for(int i=0;i<r;i++)//è¡Œ 
-	for(int j=0;j<i+1;j++)//åˆ— 
+	for(int i=0;i<r;i++)//ÐÐ 
+	for(int j=0;j<i+1;j++)//ÁÐ 
 	cin>>triangle[i][j];
 	int ans=0; 
 	for(int i=1;i<r;i++)

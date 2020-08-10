@@ -1,4 +1,4 @@
-//problemï¼Ÿ 
+//problem£¿ 
 #include<iostream>
 #include<cstdio>
 using namespace std; 
@@ -12,15 +12,15 @@ bool valid(double l,double r){
 	if(l+jd>r) return 0;
 	if(dr(l)==0){printf("%.2lf ",l); return 1;}
 //	if(dr(r)==0){printf("%.2lf ",r); return 1;}
-//	è¿™ä¸€è¡Œä¸ç”¨å†™ï¼Œå†™äº†åè€Œä¼šä½¿æ¯ä¸ªæ•´æ•°è§£è¾“å‡ºä¸¤è¾¹ 
+//	ÕâÒ»ÐÐ²»ÓÃÐ´£¬Ð´ÁË·´¶ø»áÊ¹Ã¿¸öÕûÊý½âÊä³öÁ½±ß 
 	double mid=(l+r)/2.0,value=dr(mid);
 	if(value+jd>=0&&value-jd<=0){printf("%.2lf ",mid); return 1;}
 //	return valid(l,mid);
 //	return valid(mid,r);
-//	è¿™é‡Œä¸èƒ½è¿™æ ·å†™ï¼Œå¦åˆ™ä¼šç›´æŽ¥è¿”å›žï¼Œå‰©ä¸‹çš„å¦ä¸€åŠå°±ä¸ä¼šç®—åˆ° 
+//	ÕâÀï²»ÄÜÕâÑùÐ´£¬·ñÔò»áÖ±½Ó·µ»Ø£¬Ê£ÏÂµÄÁíÒ»°ë¾Í²»»áËãµ½ 
 	return valid(l,mid)||valid(mid,r);
 //	return 0;
-//	ç”¨äº†å¼‚æˆ–çš„æƒ…å†µä¸‹ï¼Œå°±ä¸éœ€è¦å†è¿”å›ž0äº† 
+//	ÓÃÁËÒì»òµÄÇé¿öÏÂ£¬¾Í²»ÐèÒªÔÙ·µ»Ø0ÁË 
 }
 int main()
 {

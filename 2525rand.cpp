@@ -1,6 +1,6 @@
-#include<iostream>//ä¸æƒ³OIä¸€åœºç©ºï¼Œåƒä¸‡åˆ«ç”¨ä¸‡èƒ½å¤´
-#include<algorithm>//å¿«æ’sort()
-#include<cstdio>//èƒ½ä¸ç”¨cinå°±ä¸ç”¨
+#include<iostream>//²»ÏëOIÒ»³¡¿Õ£¬Ç§Íò±ğÓÃÍòÄÜÍ·
+#include<algorithm>//¿ìÅÅsort()
+#include<cstdio>//ÄÜ²»ÓÃcin¾Í²»ÓÃ
 #include<cstring>
 #include<ctime>
 #define IL inline

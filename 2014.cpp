@@ -20,7 +20,7 @@ struct animal{
 	int enemy;
 } ani[50001];
 
-//æ‰¾ç¥–å…ˆ 
+//ÕÒ×æÏÈ 
 animal getf(int a)
 {
 	animal now=ani[a];
@@ -40,7 +40,7 @@ animal getf(int a)
 	*/
 	return ani[a]=now;
 }
-//åˆå¹¶ è¿”å›æ˜¯å¦åˆæ³• 
+//ºÏ²¢ ·µ»ØÊÇ·ñºÏ·¨ 
 bool merge(int a,int b)
 {
 	

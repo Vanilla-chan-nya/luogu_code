@@ -13,14 +13,14 @@ bool zs(int a)
 	}
 	return true;
 }
-void func(int depth,int sam,bool change,int tk)//now:çŽ°åœ¨æ­£åœ¨é€‰æ‹©çš„æ•°å­—çš„ä¸‹æ ‡ 
+void func(int depth,int sam,bool change,int tk)//now:ÏÖÔÚÕýÔÚÑ¡ÔñµÄÊý×ÖµÄÏÂ±ê 
 {
 	if(depth>n) return;
 	if(tk==k&&change&&zs(sam)) ans++;
 	if(depth)
-//	é€‰ä¸‹ä¸€ä¸ªæ•° 
+//	Ñ¡ÏÂÒ»¸öÊý 
 	func(depth+1,sam+num[depth],true,tk+1);
-//	ä¸é€‰ä¸‹ä¸€ä¸ªæ•° 
+//	²»Ñ¡ÏÂÒ»¸öÊý 
 	func(depth+1,sam,false,tk);
 	return;
 }

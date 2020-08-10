@@ -1,5 +1,5 @@
-#include<iostream>//涓嶆兂OI涓�鍦虹┖锛屽崈涓囧埆鐢ㄤ竾鑳藉ご
-#include<algorithm>//蹇帓sort()
+#include<iostream>//不想OI一场空，千万别用万能头
+#include<algorithm>//快排sort()
 #include<cstring>
 #include<cstdio>
 #include<map> 

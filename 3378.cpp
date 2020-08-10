@@ -36,7 +36,7 @@ void heap_pop_top(int _heap[],int _n)
 	swap(_heap[1],_heap[_n]);
 	heap_down(_heap,_n-1,1);
 }
-//åˆ›å»º æ•´ç†å † 
+//´´½¨ ÕûÀí¶Ñ 
 void heap_make(int _heap[],int _n)
 {
 	for(int i=_n;i>0;i--)
