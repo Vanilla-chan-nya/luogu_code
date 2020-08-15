@@ -1,84 +1,86 @@
-#pragma GCC optimize(2)
 #include<iostream>
-#include<cstring>
+#include<algorithm>
 #include<cstdio>
+#include<cstring>
+#include<cmath>
+#include<set>
+#include<queue>
+#include<vector>
+#define IL inline
+#define re register
+#define LL long long
 using namespace std;
-const int inf = 0x3f3f3f;
+
 int n,m;
-int p[182][182];
-/*
-3 4
-0001
-0011
-0110
-*/
-int search(int x,int y)
-{
-	if(p[x][y]==-1) 
-		return 0;
-	if(p[x][y]<=inf/2)
-		return p[x][y];
-	int minans=inf,ans=inf;
-	for(int i=1; ;i++)
+int map[200][200];
+
+struct point{
+	int x,y;
+	point(){
+		x=y=0;
+	}
+	point(int a,int b)
 	{
-		if(x+i>n&&x-i<=0&&y+i>m&&y-i<=0) 
-			break;
-		if(p[x+i][y]<=inf/2&&x+i<=n)
-			ans=min(p[x+i][y],ans);
-		if(p[x-i][y]<=inf/2&&x-i>0)
-			ans=min(p[x-i][y],ans);
-		if(p[x][y+i]<=inf/2&&y+i<=m)
-			ans=min(p[x][y+i],ans);
-		if(p[x][y-i]<=inf/2&&y-i>0)
-			ans=min(p[x][y-i],ans);
-		if(ans<=inf/2)
+		x=a,y=b;
+	}
+};
+
+int delta[4][2]={0,1,0,-1,1,0,-1,0};
+
+void expand(int a,int b)
+{
+	bool book[200][200];
+	memset(book,0,sizeof(book));
+	book[a][b]=1;
+	deque<point>line;
+	line.push_back({a,b});
+	while(!line.empty())
+	{
+		point t=line.front();
+		line.pop_front();
+		book[t.x][t.y]=0;
+//		cout<<"拓展到"<<t.x<<" "<<t.y<<endl;
+		for(int i=0;i<4;i++)
 		{
-			minans=ans+i;
-			break;
+			if(t.x+delta[i][0]>=0&&t.x+delta[i][0]<n&&t.y+delta[i][1]>=0&&t.y+delta[i][1]<m&&map[t.x+delta[i][0]][t.y+delta[i][1]]>map[t.x][t.y]+1)
+			{
+				map[t.x+delta[i][0]][t.y+delta[i][1]]=map[t.x][t.y]+1;
+				if(!book[t.x+delta[i][0]][t.y+delta[i][1]]) book[t.x+delta[i][0]][t.y+delta[i][1]]=1,line.push_back({t.x+delta[i][0],t.y+delta[i][1]});
+			}
 		}
 	}
-	return minans+1;
 }
-void extended(int x,int y)
-{
-	for(int i=1; ;i++)
-	{
-		if(x+i>n&&x-i<=0&&y+i>m&&y-i<=0) 
-			break;
-		if(p[x+i][y]<=inf/2&&x+i<=n&&p[x+1][y]!=-1)
-			p[x+i][y]=min(i,p[x+i][y]);
-		if(p[x-i][y]<=inf/2&&x-i>0&&p[x-1][y]!=-1)
-			p[x-i][y]=min(i,p[x-i][y]);
-		if(p[x][y+i]<=inf/2&&y+i<=m&&p[x][y+1]!=-1)
-			p[x][y+i]=min(i,p[x][y+i]);
-		if(p[x][y-i]<=inf/2&&y-i>0&&p[x][y-1]!=-1)
-			p[x][y-i]=min(i,p[x][y-i]);
-	}
-}
+
+
 int main()
 {
 	cin>>n>>m;
+	memset(map,0x7F,sizeof(map));
 	char t;
-	memset(p,inf,sizeof(p));
-	for(int i=1;i<=n;i++)
-	for(int j=1;j<=m;j++)
+	for(int i=0;i<n;i++)
+	for(int j=0;j<m;j++)
 	{
 		t=getchar();
-		if(t==' '||t=='\n') 
+		while(t==' '||t=='\n') t=getchar();
+		if(t=='1')
 		{
-			j--;
-			continue;
+			map[i][j]=0;
+//			cout<<i<<" "<<j<<"被更新为0\n";
 		}
-		if(t=='1') {
-			p[i][j]=-1;
-			extended(i,j);
-		}
-	}
-	for(int i=1;i<=n;i++)
+	} 
+	for(int i=0;i<n;i++)
+	for(int j=0;j<m;j++)
 	{
-		for(int j=1;j<=m;j++)
-			cout<<search(i,j)<<" ";
+//		cout<<"更新"<<i<<" "<<j<<endl; 
+		expand(i,j);
+//		cout<<"更新完毕\n"; 
+	} 
+	for(int i=0;i<n;i++)
+	{
+		for(int j=0;j<m;j++) cout<<map[i][j]<<" ";
 		cout<<endl;
 	}
 	return 0;
 }
+
+
