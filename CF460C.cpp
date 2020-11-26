@@ -1,52 +1,99 @@
-#include<bits/stdc++.h>
+#include<iostream>
+#include<algorithm>
+#include<cstdio>
+#include<cstring>
+#include<cmath>
+#include<map>
+#include<set>
+#include<queue>
+#include<vector>
+#define IL inline
 #define re register
+#define LL long long
+#define ULL unsigned long long
+#define re register
+#define debug printf("Now is %d\n",__LINE__);
 using namespace std;
+
+template<class T>inline void read(T&x)
+{
+    char ch=getchar();
+    while(!isdigit(ch))ch=getchar();
+    x=ch-'0';ch=getchar();
+    while(isdigit(ch)){x=x*10+ch-'0';ch=getchar();}
+}
 inline int read()
 {
-	re int x=0,f=1;
-	re char ch=getchar();
-	for(;ch>'9'||ch<'0';ch=getchar()) if(ch=='-') f*=-1;
-	for(;ch>='0'&&ch<='9';ch=getchar()) x=(x<<1)+(x<<3)+(ch^48);
-	return x*f;
+	int x=0;
+    char ch=getchar();
+    while(!isdigit(ch))ch=getchar();
+    x=ch-'0';ch=getchar();
+    while(isdigit(ch)){x=x*10+ch-'0';ch=getchar();}
+    return x;
 }
-
-
-#define maxn 100010
+int G[55];
+template<class T>inline void write(T x)
+{
+    int g=0;
+    if(x<0) x=-x,putchar('-');
+    do{G[++g]=x%10;x/=10;}while(x);
+    for(re int i=g;i>=1;--i)putchar('0'+G[i]);putchar('\n');
+}
 int n,m,w;
-int need[maxn];
-int f[maxn];
-bool judge(int s){
-	int a=0,b=m;
-	for(re int i=1;i<=n;i++){
-		if(i>=w)
-			a-=need[i-w];
-		need[i]=max((int)0,s-a-f[i]);
-		a+=need[i];
-		b-=need[i];
-		if(b<0)
-			return false;
+int a[100010],delta[100010];
+//struct node
+//{
+//	int l,r,sum;
+//	#define l(x) b[x].l
+//	#define r(x) b[x].r
+//	#define sum(x) b[x].sum
+//}b[400010];
+//void upd(int p)
+//{
+//	sum(p)=sum(p*2)+sum(p*2+1);
+//}
+//void build(int l,int r,int p)
+//{
+//	l(p)=l;
+//	r(p)=r;
+//	if(l==r)
+//	{
+//		sum()
+//	}
+//}
+
+bool check(int x)
+{
+	int now=0,tme=0;
+	for(int i=1;i<=n;i++)
+	{
+		now+=delta[i];
+		if(now<x)
+		{
+			delta[i]+=x-now;
+			delta[min(i+w+1,n)]-=x-now;
+			tme+=x-now;
+		}
+		if(tme>m) return 0;
 	}
-	return true;
+	return 1;
 }
-int main(){
+
+int main()
+{
 	n=read();
 	m=read();
 	w=read();
-	re int l=(1<<30);
-	for(re int i=1;i<=n;i++){
-		f[i]=read();
-		l=min(f[i],l);
+	int l=1000000000,r=0,mid;
+	for(int i=1;i<=n;i++) a[i]=read(),r=max(a[i]+m,r),l=min(l,a[i]);
+	while(l<r)
+	{
+		mid=(l+r)>>1;
+		for(int i=1;i<=n;i++) delta[i]=a[i]-a[i-1];
+		if(check(mid)) l=mid+1;
+		else r=mid;
 	}
-	re int r=l+m;
-	re int mid=(l+r>>1)+1;
-	while(l<r){
-		if(judge(mid)){
-			l=mid;
-		}else{
-			r=mid-1;
-		}
-		mid=(l+r>>1)+1;
-	}
-	cout<<l<<endl;
+	cout<<mid+1;
+	return 0;
 }
 

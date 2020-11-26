@@ -1,22 +1,33 @@
 #include<iostream>
-int n[200000];
+#include<algorithm>
+#include<cstdio>
+#include<cstring>
+#include<cmath>
+#include<map>
+#include<set>
+#include<queue>
+#include<vector>
+#define IL inline
+#define re register
+#define LL long long
+#define ULL unsigned long long
+#define re register
 using namespace std;
+int n;
+int a[200010],m[200010];
 int main()
 {
-	int size,maxsam=-10001,sam;
-	cin>>size;
-	for(int k=0;k<size;k++)
-		cin>>n[k];
-	//
-	for(int i=0;i<size;i++){ 
-		for(int j=i;j<size;j++)
-		{
-			if(i==j) sam=n[j];
-			else sam+=n[j];
-			maxsam=max(sam,maxsam);
-		} 
-		
+	cin>>n;
+	int ans=-100000;
+	for(int i=1;i<=n;i++) cin>>a[i];
+	for(int i=1;i<=n;i++)
+	{
+		a[i]=max(a[i],a[i-1]+a[i]); 
 	}
-	cout<<maxsam;
+	for(int i=1;i<=n;i++)
+	{
+		ans=max(ans,a[i]);
+	}
+	cout<<ans; 
 	return 0;
-} 
+}

@@ -3,84 +3,105 @@
 #include<cstdio>
 #include<cstring>
 #include<cmath>
+//#include<map>
 #include<set>
 #include<queue>
 #include<vector>
 #define IL inline
 #define re register
 #define LL long long
+#define ULL unsigned long long
+#define re register
 using namespace std;
 
-int n,m;
-int map[200][200];
+template<class T>inline void read(T&x)
 
-struct point{
-	int x,y;
-	point(){
-		x=y=0;
-	}
-	point(int a,int b)
-	{
-		x=a,y=b;
-	}
-};
-
-int delta[4][2]={0,1,0,-1,1,0,-1,0};
-
-void expand(int a,int b)
 {
-	bool book[200][200];
+    char ch=getchar();
+    while(!isdigit(ch))ch=getchar();
+    x=ch-'0';ch=getchar();
+    while(isdigit(ch)){x=x*10+ch-'0';ch=getchar();}
+}
+inline int read()
+{
+	int x=0;
+    char ch=getchar();
+    while(!isdigit(ch))ch=getchar();
+    x=ch-'0';ch=getchar();
+    while(isdigit(ch)){x=x*10+ch-'0';ch=getchar();}
+    return x;
+}
+int G[55];
+template<class T>inline void write(T x)
+{
+    int g=0;
+    do{G[++g]=x%10;x/=10;}while(x);
+    for(int i=g;i>=1;--i)putchar('0'+G[i]);putchar('\n');
+}
+int n,m;
+int map[4000][4000];
+int dis[4000][4000];
+bool book[4000][4000];
+struct edge{
+	int x,y;
+};
+bool exist(int i,int j)
+{
+	return i>=0&&i<n&&j>=0&&j<m;
+}
+int dt[4][2]={1,0,-1,0,0,-1,0,1};
+void bfs(int i,int j)
+{
+	deque<edge>q;
+	q.push_back((edge){i,j});
 	memset(book,0,sizeof(book));
-	book[a][b]=1;
-	deque<point>line;
-	line.push_back({a,b});
-	while(!line.empty())
+	book[i][j]=1;
+	edge now;
+	while(!q.empty())
 	{
-		point t=line.front();
-		line.pop_front();
-		book[t.x][t.y]=0;
-//		cout<<"拓展到"<<t.x<<" "<<t.y<<endl;
-		for(int i=0;i<4;i++)
+		now=q.front();
+		q.pop_front();
+		book[now.x][now.y]=0;
+		for(int t=0;t<4;t++)
 		{
-			if(t.x+delta[i][0]>=0&&t.x+delta[i][0]<n&&t.y+delta[i][1]>=0&&t.y+delta[i][1]<m&&map[t.x+delta[i][0]][t.y+delta[i][1]]>map[t.x][t.y]+1)
+			if(exist(now.x+dt[t][0],now.y+dt[t][1])==0) continue;
+			if(map[now.x+dt[t][0]][now.y+dt[t][1]]==0)
 			{
-				map[t.x+delta[i][0]][t.y+delta[i][1]]=map[t.x][t.y]+1;
-				if(!book[t.x+delta[i][0]][t.y+delta[i][1]]) book[t.x+delta[i][0]][t.y+delta[i][1]]=1,line.push_back({t.x+delta[i][0],t.y+delta[i][1]});
+				if(dis[now.x+dt[t][0]][now.y+dt[t][1]]>abs(i-now.x-dt[t][0])+abs(j-now.y-dt[t][1]))
+				{
+					dis[now.x+dt[t][0]][now.y+dt[t][1]]=abs(i-now.x-dt[t][0])+abs(j-now.y-dt[t][1]);
+					if(!book[now.x+dt[t][0]][now.y+dt[t][1]]) q.push_back((edge){now.x+dt[t][0],now.y+dt[t][1]}),book[now.x+dt[t][0]][now.y+dt[t][1]]=1;
+				}
 			}
 		}
 	}
 }
-
-
 int main()
 {
 	cin>>n>>m;
-	memset(map,0x7F,sizeof(map));
 	char t;
 	for(int i=0;i<n;i++)
-	for(int j=0;j<m;j++)
 	{
-		t=getchar();
-		while(t==' '||t=='\n') t=getchar();
-		if(t=='1')
+		for(int j=0;j<m;j++)
 		{
-			map[i][j]=0;
-//			cout<<i<<" "<<j<<"被更新为0\n";
+			dis[i][j]=0x3f3f3f3f;
+			do{
+				t=getchar();
+			}while(t==' '||t=='\n');
+			map[i][j]=t-'0';
+			if(t=='1') dis[i][j]=0;
 		}
-	} 
+	}
 	for(int i=0;i<n;i++)
 	for(int j=0;j<m;j++)
 	{
-//		cout<<"更新"<<i<<" "<<j<<endl; 
-		expand(i,j);
-//		cout<<"更新完毕\n"; 
-	} 
+		if(map[i][j]) bfs(i,j);
+	}
 	for(int i=0;i<n;i++)
 	{
-		for(int j=0;j<m;j++) cout<<map[i][j]<<" ";
+		for(int j=0;j<m;j++) cout<<dis[i][j]<<" ";
 		cout<<endl;
 	}
 	return 0;
 }
-
 
