@@ -10,7 +10,6 @@
 #define IL inline
 #define re register
 #define LL long long
-#define int long long
 #define re register
 #define debug printf("Now is %d\n",__LINE__);
 using namespace std;
@@ -40,44 +39,49 @@ template<class T>inline void write(T x)
     for(re int i=g;i>=1;--i)putchar('0'+G[i]);putchar('\n');
 }
 int n;
-struct num
+struct node
 {
-	int v1,rank,v2;
+	int x,y,z;
 }a[500010];
-int b[500010];
-bool cmp1(num a,num b)
+bool cmp1(node x,node y)
 {
-	return a.v2<b.v2;
+	return x.x<y.x;
 }
-void add(int x,int y)
+bool cmp2(node x,node y)
 {
-//	debug;
-	for(;x<=n;x+=x&(-x)) b[x]+=y;
+	return x.y<y.y;
+}
+int b[500010];
+void add(int x)
+{
+	while(x<=n) b[x]++,x+=x&(-x);
 }
 int ask(int x)
 {
-//	debug;
 	int ans=0;
-	for(;x>0;x-=x&(-x)) ans+=b[x];
+	while(x) ans+=b[x],x-=x&(-x);
 	return ans;
 }
-signed main()
+LL ans;
+int main()
 {
+//	freopen("P1908_1.in","r",stdin);
 	n=read();
+	for(int i=1;i<=n;i++) a[i].x=a[i].z=read(),a[i].y=i;
+	stable_sort(a+1,a+n+1,cmp1);
+	for(int i=1;i<=n;i++){
+		if(a[i].z==a[i-1].z) a[i].x=a[i-1].x;
+		else 
+		a[i].x=i;
+	}
+	stable_sort(a+1,a+n+1,cmp2);
+//	for(int i=1;i<=n;i++) write(a[i].x);
 	for(int i=1;i<=n;i++)
 	{
-		a[i].v1=read();
-		a[i].v2=i;
+		add(a[i].x);
+		ans+=ask(a[i].x-1);
 	}
-	sort(a+1,a+n+1,cmp1);
-	int ans=0;
-	for(int i=1;i<=n;i++)
-	{
-		a[i].rank=a[i].v2; 
-		add(i,a[i].rank);
-		ans+=ask(a[i].rank-1);
-	}
-	cout<<ans;
+	write(ans+1);
 	return 0;
 }
 

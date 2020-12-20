@@ -1,5 +1,6 @@
 #include<iostream>
 #include<cmath>
+#define IL inline
 using namespace std;
 string str1,str2;
 const int maxn=10001;
@@ -19,21 +20,33 @@ bool cmp1()
 	}
 	return true;
 }
-bool judge()
+int i;
+IL bool judge()
 {
-	for(int i=0;i<e;i++)
+	for(i=0;i<e;i++)
 		if(a[i]) return false;
 	return true;
 }
-void swap_array()
+IL void swap_array()
 {
-	for(int i=0;i<e;i++) swap(a[i],b[i]);
+	for(i=0;i<e;i++) swap(a[i],b[i]);
 }
 void gcd()
 {
+	if((a[0]&1)==0)
+	{
+		for(i=e-1;i>0;i--)
+		{
+			if(a[i]&1) a[i-1]+=10;
+			a[i]>>=1;
+		}
+		a[0]>>=1;
+		gcd();
+		return;
+	}
 	if(!cmp1()) swap_array();
 	update();
-	for(int i=0;i<e;i++)
+	for(i=0;i<e;i++)
 	{
 		a[i]-=b[i];
 		if(a[i]<0)
@@ -48,14 +61,14 @@ void gcd()
 int main()
 {
 	cin>>str1>>str2;
-	for(int i=0;i<str1.size();i++) a[str1.size()-i-1]=str1[i]-'0';
-	for(int i=0;i<str2.size();i++) b[str2.size()-i-1]=str2[i]-'0';
+	for(i=0;i<str1.size();i++) a[str1.size()-i-1]=str1[i]-'0';
+	for(i=0;i<str2.size();i++) b[str2.size()-i-1]=str2[i]-'0';
 	gcd();
 	bool s=0;
-	for(int i=e-1;i>=0;i--)
+	for(i=e-1;i>=0;i--)
 	{
 		if(b[i]) s=1;
-		if(s==1) cout<<b[i];
+		if(s) putchar(b[i]+'0');
 	}
 	return 0;
 }
