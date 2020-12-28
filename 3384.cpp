@@ -38,6 +38,13 @@ int head[100010],nxt[100010],ver[100010];
 int dfn[100010],top[100010];
 int w[100010],wt[100010];
 int n,cnt1,cnt2;
+struct node
+{
+	int l,r;
+	int v;
+	#define l(x) b[x].l
+	#define r(X) b[x].r
+}b[2000100]
 void insert(int x,int y)
 {
 	nxt[++cnt1]=head[x];
@@ -71,7 +78,18 @@ void dfs2(int x,int tp)
 		dfs2(ver[i],ver[i]);
 	}
 }
-void build
+void build(int p,int l,int r)
+{
+	l(p)=l;
+	r(p)=r;
+	if(l==r)
+	{
+		
+		
+		return;
+	}
+}
+int n,m,r,p;
 int main()
 {
 	n=read();
