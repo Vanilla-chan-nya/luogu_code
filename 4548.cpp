@@ -46,22 +46,40 @@ template<class T>inline void write(T x)
 	do{G[++g]=x%10;x/=10;}while(x);
 	for(int i=g;i>=1;--i)putchar('0'+G[i]);putchar('\n');
 }
-int t,n,m;
-char ch[100010];
+int t,n,m,ans;
+int ch[100010];
 int nxt[100010];
 #define mod 10000
+int pown[100010];
 int main()
 {
 	n=read();
 	t=read();
+	for(int i=pown[0]=1;i<=100010;i++)
+	{
+		pown[i]=pown[i-1]*n%mod;
+	}
 	while(t--)
 	{
+		memset(nxt,0,sizeof(nxt));
+		memset(ch,0,sizeof(ch));
+		ans=0;
 		m=read();
 		for(int i=1;i<=m;i++)
 		{
 			cin>>ch[i];
 		}
-		
+		for(int i=2,j=0;i<=m;i++)
+		{
+			while(j&&ch[i]!=ch[j+1]) j=nxt[j];
+			if(ch[i]==ch[j+1]) j++;
+			nxt[i]=j;
+		}
+		for(int i=m;i;i=nxt[i]) ans=(ans+pown[i])%mod;
+		if(ans<1000) putchar('0');
+		if(ans<100) putchar('0');
+		if(ans<10) putchar('0');
+		cout<<ans<<endl;
 	}
 	
 	return 0;
