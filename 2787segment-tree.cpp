@@ -48,10 +48,14 @@ template<class T>inline void write(T x)
 }
 struct node
 {
-	int l,r;
 	int tot[30];
+	int l,r;
 	bool lazy;
 	int k;
+	IL node()
+	{
+		
+	}
 	#define l(x) b[x].l
 	#define r(x) b[x].r
 	#define tot(x,y) b[x].tot[y]
@@ -59,9 +63,10 @@ struct node
 	#define k(x) b[x].k
 }b[50010*4];
 char a[50010];
+int i,ti;
 void upd(int p)
 {
-	for(int i=0;i<26;i++) tot(p,i)=tot(p<<1,i)+tot(p<<1|1,i);
+	for(ti=0;ti<26;ti++) tot(p,ti)=tot(p<<1,ti)+tot(p<<1|1,ti);
 }
 void build(int p,int l,int r)
 {
@@ -96,6 +101,8 @@ void spread(int p)
 		lazy(p)=0;
 	}
 }
+int ans;
+
 void change(int p,int l,int r,int k)
 {
 	if(l<=l(p)&&r(p)<=r)
@@ -112,65 +119,74 @@ void change(int p,int l,int r,int k)
 	if(r>mid) change(p<<1|1,l,r,k);
 	upd(p);
 }
-int ask_one(int p,int l,int r,int k)
+int t,x,y;
+int k;
+void ask_one(int p)
 {
 //	cout<<"p="<<p<<" lp="<<l(p)<<" rp="<<r(p)<<endl;
-	if(l<=l(p)&&r(p)<=r)
+	if(x<=l(p)&&r(p)<=y)
 	{
-		return tot(p,k);
-	}
-	spread(p);
-	int mid=l(p)+r(p)>>1,ans=0;
-	if(l<=mid) ans+=ask_one(p<<1,l,r,k);
-	if(r>mid) ans+=ask_one(p<<1|1,l,r,k);
-	return ans;
-}
-int s[30];
-void ask(int p,int l,int r)
-{
-	if(l<=l(p)&&r(p)<=r)
-	{
-		for(int i=0;i<26;i++) s[i]+=tot(p,i);
+		ans+=tot(p,k);
 		return;
 	}
 	spread(p);
 	int mid=l(p)+r(p)>>1;
-	if(l<=mid) ask(p<<1,l,r);
-	if(r>mid) ask(p<<1|1,l,r);
+	if(x<=mid) ask_one(p<<1);
+	if(y>mid) ask_one(p<<1|1);
+}
+int s[30];
+void ask(int p)
+{
+	if(x<=l(p)&&r(p)<=y)
+	{
+		for(i=0;i<26;i++) s[i]+=tot(p,i);
+		return;
+	}
+	spread(p);
+	int mid=l(p)+r(p)>>1;
+	if(x<=mid) ask(p<<1);
+	if(y>mid) ask(p<<1|1);
 }
 int n,m;
 int main()
 {
+	//freopen("P2787_12.in","r",stdin);
+	//freopen("P2787.out","w",stdout);
 	n=read();
 	m=read();
-	for(int i=1;i<=n;i++)
-	{
-		cin>>a[i];
-	}
+	scanf("%s",a+1);
 	build(1,1,n);
-	int t,x,y;
-	char k;
 	while(m--)
 	{
 		t=read();
 		if(t==1)
 		{
-			cin>>x>>y>>k;
+			x=read();
+			y=read();
+			k=getchar();
+			while(k==' '||k=='\n') k=getchar();
 			if(k<='z'&&k>='a') k+='A'-'a';
-			cout<<ask_one(1,x,y,k-'A')<<endl;
+			k-='A';
+			ans=0;ask_one(1);
+			write(ans);
 		}
 		else if(t==2)
 		{
-			cin>>x>>y>>k;
+			x=read();
+			y=read();
+			k=getchar();
+			while(k==' '||k=='\n') k=getchar();
 			if(k<='z'&&k>='a') k+='A'-'a';
-			change(1,x,y,k-'A');
+			k-='A';
+			change(1,x,y,k);
 		}
 		else
 		{
-			cin>>x>>y;
+			x=read();
+			y=read();
 			memset(s,0,sizeof(s));
-			ask(1,x,y);
-			for(int i=0;i<26;i++)
+			ask(1);
+			for(i=0;i<26;i++)
 			{
 				if(s[i])
 				{
@@ -182,5 +198,4 @@ int main()
 	}
 	return 0;
 }
-
 
