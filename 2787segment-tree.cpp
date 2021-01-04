@@ -82,21 +82,22 @@ void spread(int p)
 {
 	if(lazy(p))
 	{
-		memset(b[p].tot,0,sizeof(b[p].tot));
+		//memset(b[p].tot,0,sizeof(b[p].tot));
 		if(l(p)!=r(p))
 		{
 			lazy(p<<1)=1,k(p<<1)=k(p);
+			memset(b[p<<1].tot,0,sizeof(b[p<<1].tot));
 			tot(p<<1,k(p))=r(p<<1)-l(p<<1)+1;
 			lazy(p<<1|1)=1,k(p<<1|1)=k(p);
+			memset(b[p<<1|1].tot,0,sizeof(b[p<<1|1].tot));
 			tot(p<<1|1,k(p))=r(p<<1|1)-l(p<<1|1)+1;
 		}
-		upd(p);
+		//upd(p);
 		lazy(p)=0;
 	}
 }
 void change(int p,int l,int r,int k)
 {
-	spread(p);
 	if(l<=l(p)&&r(p)<=r)
 	{
 		lazy(p)=1;
@@ -105,6 +106,7 @@ void change(int p,int l,int r,int k)
 		tot(p,k)=r(p)-l(p)+1;
 		return;
 	}
+	spread(p);
 	int mid=l(p)+r(p)>>1;
 	if(l<=mid) change(p<<1,l,r,k);
 	if(r>mid) change(p<<1|1,l,r,k);
