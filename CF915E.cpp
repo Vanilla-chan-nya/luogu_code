@@ -56,6 +56,7 @@ struct node
 	{
 		l=ll;
 		r=rr;
+		sum=r-l+1;
 	}
 	#define l(x) b[x].l
 	#define r(x) b[x].r
