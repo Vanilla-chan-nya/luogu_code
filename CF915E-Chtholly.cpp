@@ -50,6 +50,14 @@ struct node
 {
 	int l,r;
 	mutable v;
+	node()
+	{
+		l=r=v=0;
+	}
+	node(int ll,int rr,int)
+	{
+		
+	}
 	bool operator<(const node z)const
 	{
 		return l<z.l;
