@@ -51,29 +51,19 @@ struct node
 	int l,r;
 	int sum;
 	bool lazy,k;
+	int ls,rs;
 	#define l(x) b[x].l
 	#define r(x) b[x].r
 	#define sum(x) b[x].sum
 	#define lazy(x) b[x].lazy
 	#define k(x) b[x].k
-}b[3*100010*4];
+	#define ls(x) b[x].ls
+	#define rs(x) b[x].rs
+}b[4000100];
+int cnt;
 IL void upd(int p)
 {
-	sum(p)=sum(p<<1)+sum(p<<1|1);
-}
-void build(int p,int l,int r)
-{
-	l(p)=l;
-	r(p)=r;
-	if(l==r)
-	{
-		sum(p)=1;
-		return;
-	}
-	int mid=l+r>>1;
-	build(p<<1,l,mid);
-	build(p<<1|1,mid+1,r);
-	upd(p);
+	sum(p)=sum(ls(p))+sum(rs(p));
 }
 void spread(int p)
 {
@@ -81,7 +71,7 @@ void spread(int p)
 	{
 		if(l(p)!=r(p))
 		{
-			sum(p<<1)=r(p<<1)-l(p<<1)+1;
+			if(ls(p)) sum(p<<1)=r(p<<1)-l(p<<1)+1;
 			sum(p<<1|1)=r(p<<1|1)-l(p<<1|1)+1;
 			sum(p<<1)*=k(p);
 			sum(p<<1|1)*=k(p);
