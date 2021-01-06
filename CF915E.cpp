@@ -57,6 +57,7 @@ struct node
 		l=ll;
 		r=rr;
 		sum=r-l+1;
+		lazy=k=ls=rs=0;
 	}
 	#define l(x) b[x].l
 	#define r(x) b[x].r
@@ -69,10 +70,13 @@ struct node
 int cnt;
 IL void upd(int p)
 {
+	if(!ls(p)) b[ls(p)=++cnt]=node(l(p),l(p)+r(p)>>1);
+	if(!rs(p)) b[ls(p)=++cnt]=node((l(p)+r(p)>>1)+1,r(p));
 	sum(p)=sum(ls(p))+sum(rs(p));
 }
 void spread(int p)
 {
+	debug cout<<"spread "<<p<<endl;
 	if(lazy(p))
 	{
 		if(l(p)!=r(p))
@@ -101,7 +105,7 @@ void spread(int p)
 }
 void change(int p,int l,int r,int k)
 {
-	debug cout<<"now="<<p<<endl;
+	debug cout<<"now="<<p<<" lp="<<l(p)<<" rp="<<r(p)<<endl;
 	if(l<=l(p)&&r(p)<=r)
 	{
 		lazy(p)=1;
@@ -109,7 +113,6 @@ void change(int p,int l,int r,int k)
 		sum(p)=r(p)-l(p)+1;
 		sum(p)*=k;
 		return;
-		
 	}
 	spread(p);
 	int mid=l(p)+r(p)>>1;
@@ -136,7 +139,7 @@ int main()
 {
 	n=read();
 	m=read();
-	b[++cnt]=node(1,n);
+	b[cnt=1]=node(1,n);
 	int k,l,r;
 	while(m--)
 	{
