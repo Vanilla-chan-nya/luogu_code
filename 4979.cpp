@@ -53,7 +53,7 @@ struct node
 	#define l(x) b[x].l
 	#define r(x) b[x].r
 	#define v(x) b[x].v
-	#define lazy(p) b[x].lazy
+	#define lazy(x) b[x].lazy
 }b[500010*4];
 char ch[500010];
 void upd(int p)
@@ -100,14 +100,26 @@ void change(int p,int l,int r,int k)
 }
 bool same;
 int color;
+int ask(int p,int x)
+{
+	if(v(p)!=-1) return v(p);
+	int mid=l(p)+r(p)>>1;
+	if(x<=mid) return ask(p<<1,x);
+	else return ask(p<<1|1,x);
+}
 void ask_same(int p,int l,int r)
 {
 	if(!same) return;
 	if(l<=l(p)&&r(p)<=r)
 	{
-		
+		if(color!=v(p)) color=-1,same=0;
+		return;
 	}
+	int mid=l(p)+r(p)>>1;
+	if(l<=mid) ask_same(p<<1,l,r);
+	if(r>mid) ask_same(p<<1|1,l,r); 
 }
+int n,m;
 int main()
 {
 	n=read();
@@ -142,7 +154,7 @@ int main()
 			{
 				if(x!=1&&y!=n)
 				{
-					if(ask(x-1)!=ask(y+1)) same=0;
+					if(ask(1,x-1)!=ask(1,y+1)) same=0;
 				}
 			}
 			if(same) printf("Yes\n");
