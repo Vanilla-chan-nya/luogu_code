@@ -224,7 +224,7 @@ struct node
 }b[2000010];
 void upd(int p)
 {
-	if(v(p<<1)==v(p<<1|1)) v(p)=v(p)<<1;
+	if(v(p<<1)==v(p<<1|1)) v(p)=v(p<<1);
 	else v(p)=-1;
 }
 int ans;
@@ -234,7 +234,7 @@ void build(int p,int l,int r)
 	r(p)=r;
 	if(l==r)
 	{
-		v(p)=ch[l]-'A';
+		v(p)=ch[l]-'A'+1;
 		return;
 	}
 	int mid=l+r>>1;
@@ -309,7 +309,7 @@ int main()
 		{
 			op=getchar();
 			while(op==' '||op=='\n') op=getchar();
-			change(1,x,y,op-'A');
+			change(1,x,y,op-'A'+1);
 		}
 		else
 		{
@@ -321,9 +321,6 @@ int main()
 			}
 			if(ans==-1) cout<<"No"<<endl;
 			else cout<<"Yes"<<endl;
-			
-			
-			
 		}
 	}
 	return 0;

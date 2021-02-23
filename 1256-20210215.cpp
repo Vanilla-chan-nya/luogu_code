@@ -3,7 +3,6 @@
 #include<cstdio>
 #include<cstring>
 #include<cmath>
-#include<map>
 #include<set>
 #include<queue>
 #include<vector>
@@ -46,55 +45,63 @@ template<class T>inline void write(T x)
 	do{G[++g]=x%10;x/=10;}while(x);
 	for(int i=g;i>=1;--i)putchar('0'+G[i]);putchar('\n');
 }
-int f[9000010],sze[9000010];
-int table[9000010];
+int map[200][200];
+int dis[200][200];
 int n,m;
-int getf(int x)
+int dt[4][2]={0,1,0,-1,1,0,-1,0};
+#define pr pair<int,int>
+#define mp(x,y) make_pair(x,y);
+queue<pr>q;
+pr t;
+IL bool exist(pr x)
 {
-	if(f[x]==x) return x;
-	return f[x]=getf(f[x]);
-}
-void merge(int x,int y)
-{
-//	cout<<"+++"<<x<<" "<<y<<endl;
-	x=getf(x);
-	y=getf(y);
-	if(x!=y)
-	{
-		sze[x]+=sze[y];
-		sze[y]=0;
-		f[y]=x;
-	}
-}
-bool ask(int x,int y)
-{
-	return getf(x)==getf(y);
+	return x.first<=n&&x.first>=1&&x.second<=m&&x.second>=1;
 }
 int main()
 {
 	n=read();
 	m=read();
 	char ch;
+	memset(dis,0x3f,sizeof(dis));
 	for(int i=1;i<=n;i++)
 	{
-		for(int j=1;j<=n;j++)
+		for(int j=1;j<=m;j++)
 		{
 			ch=getchar();
-			while(ch!='1'&&ch!='0') ch=getchar();
-			if(ch=='1') table[i*1000+j]=1;
-			sze[i*1000+j]=1;
-			f[i*1000+j]=i*1000+j;
+			while(ch=='\r'||ch=='\n'||ch==' ') ch=getchar();//WA!here!"ch=='\r'"!!F***??????
+			if(ch=='1') map[i][j]=1,dis[i][j]=0;
 		}
 	}
 	for(int i=1;i<=n;i++)
-	for(int j=1;j<=n;j++)
 	{
-		if(n-j&&table[i*1000+j]!=table[i*1000+j+1]) merge(i*1000+j,i*1000+j+1);
-		if(n-i&&table[i*1000+j]!=table[(i+1)*1000+j]) merge(i*1000+j,(i+1)*1000+j);
+		for(int j=1;j<=m;j++)
+		{
+			if(map[i][j])
+			{
+				while(q.size()) q.pop();
+				t=mp(i,j);
+				q.push(t);
+				while(q.size())
+				{
+					t=q.front();
+					q.pop();
+					for(int d=0;d<4;d++)
+					{
+						pr v=mp(t.first+dt[d][0],t.second+dt[d][1]);
+						if(exist(v)&&dis[v.first][v.second]>dis[t.first][t.second]+1)
+						{
+							dis[v.first][v.second]=dis[t.first][t.second]+1;
+							q.push(v);
+						}
+					}
+				}
+			}
+		}
 	}
-	while(m--)
+	for(int i=1;i<=n;i++)
 	{
-		write(sze[getf(read()*1000+read())]);
+		for(int j=1;j<=m;j++) cout<<dis[i][j]<<" ";
+		cout<<endl;
 	}
 	return 0;
 }

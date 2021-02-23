@@ -7,6 +7,7 @@
 #include<set>
 #include<queue>
 #include<vector>
+#include<limits.h>
 #define IL inline
 #define re register
 #define LL long long
@@ -46,57 +47,70 @@ template<class T>inline void write(T x)
 	do{G[++g]=x%10;x/=10;}while(x);
 	for(int i=g;i>=1;--i)putchar('0'+G[i]);putchar('\n');
 }
-int f[9000010],sze[9000010];
-int table[9000010];
 int n,m;
-int getf(int x)
+int low[100010],dfn[100010],col[100010],colcnt,colsze[100010];
+int dfncnt;
+int stac[100010],top;
+int head[100010],nxt[500010],ver[500010];
+int from[100010];
+int cnt;
+void insert(int x,int y)
 {
-	if(f[x]==x) return x;
-	return f[x]=getf(f[x]);
+	nxt[++cnt]=head[x];
+	from[cnt]=x;
+	head[x]=cnt;
+	ver[cnt]=y;
 }
-void merge(int x,int y)
+void tarjan(int x)
 {
-//	cout<<"+++"<<x<<" "<<y<<endl;
-	x=getf(x);
-	y=getf(y);
-	if(x!=y)
+	low[x]=dfn[x]=++dfncnt;
+	stac[++top]=x;
+	for(int i=head[x],v;i;i=nxt[i])
 	{
-		sze[x]+=sze[y];
-		sze[y]=0;
-		f[y]=x;
+		v=ver[i];
+		if(!dfn[v]) tarjan(v),low[x]=min(low[x],low[v]);
+		else if(!col[v])
+		{
+			low[x]=min(low[x],dfn[v]);
+		}
+	}
+	if(dfn[x]==low[x])
+	{
+		colcnt++;
+		while(stac[top]!=x) col[stac[top]]=colcnt,colsze[colcnt]++,top--;
+		col[stac[top]]=colcnt;
+		colsze[colcnt]++;
+		top--;
 	}
 }
-bool ask(int x,int y)
-{
-	return getf(x)==getf(y);
-}
+int out[1000010];
 int main()
 {
 	n=read();
 	m=read();
-	char ch;
-	for(int i=1;i<=n;i++)
+	for(int i=1,a,b;i<=m;i++)
 	{
-		for(int j=1;j<=n;j++)
+		a=read();
+		b=read();
+		insert(a,b);
+	}
+	for(int i=1;i<=n;i++) if(!dfn[i]) tarjan(i);
+	for(int x=1;x<=n;x++)
+	{
+		for(int i=head[x];i;i=nxt[i])
 		{
-			ch=getchar();
-			while(ch!='1'&&ch!='0') ch=getchar();
-			if(ch=='1') table[i*1000+j]=1;
-			sze[i*1000+j]=1;
-			f[i*1000+j]=i*1000+j;
+			if(col[x]!=col[ver[i]])
+			{
+				out[col[x]]++;
+			}
 		}
 	}
-	for(int i=1;i<=n;i++)
-	for(int j=1;j<=n;j++)
-	{
-		if(n-j&&table[i*1000+j]!=table[i*1000+j+1]) merge(i*1000+j,i*1000+j+1);
-		if(n-i&&table[i*1000+j]!=table[(i+1)*1000+j]) merge(i*1000+j,(i+1)*1000+j);
-	}
-	while(m--)
-	{
-		write(sze[getf(read()*1000+read())]);
-	}
+	int tmp=0,ans=0;
+	for (int i=1;i<=colcnt;i++)
+	if (!out[i])
+		ans=colsze[i],tmp++;
+	if (tmp==1) printf("%d\n",ans);
+	else printf("0\n"); 
 	return 0;
 }
-
 

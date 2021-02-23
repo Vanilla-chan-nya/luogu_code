@@ -7,56 +7,67 @@
 #include<set>
 #include<queue>
 #include<vector>
+#include<limits.h>
 #define IL inline
 #define re register
 #define LL long long
+#define ULL unsigned long long
+#ifdef TH
+#define debug printf("Now is %d\n",__LINE__);
+#else
+#define debug
+#endif
 using namespace std;
 
-IL int read()
+template<class T>inline void read(T&x)
 {
-	int ans=0;
-	bool fu=0;
 	char ch=getchar();
-	while((ch>'9'||ch<'0')&&ch!='-') ch=getchar();
-	if(ch=='-') fu=1,ch=getchar();
-	while(ch<='9'&&ch>='0') ans=(ans<<3)+(ans<<1)+(ch^48),ch=getchar();
-	if(fu) ans*=-1;
-	return ans;
+	int fu;
+	while(!isdigit(ch)&&ch!='-') ch=getchar();
+	if(ch=='-') fu=-1,ch=getchar();
+	x=ch-'0';ch=getchar();
+	while(isdigit(ch)){x=x*10+ch-'0';ch=getchar();}
+	x*=fu;
 }
-const int maxn=3e7+10;
-int p[maxn];
-char str[maxn],t[maxn]="$#";
-int len,size;
-int Manacher()
+inline int read()
 {
-   size=2;
-   len=strlen(str);
-   for(int i=0;i<len;i++)
-   {
-		t[size++]=str[i];
-		t[size++]='#';
-   }
-   int mx=0,id=0,resLen=0;
-   for(int i=1;i<size;i++)
-   {
-       p[i]=mx>i?min(p[2*id-i],mx-i):1;
-       while(t[i+p[i]]==t[i-p[i]]) p[i]++;
-       if(i+p[i]>mx)
-       {
-           mx=i+p[i];
-           id=i;
-       }
-       if(p[i]>resLen)
-       {
-           resLen=p[i];
-       }
-   }
-	return resLen-1;
+	int x=0,fu=1;
+	char ch=getchar();
+	while(!isdigit(ch)&&ch!='-') ch=getchar();
+	if(ch=='-') fu=-1,ch=getchar();
+	x=ch-'0';ch=getchar();
+	while(isdigit(ch)){x=x*10+ch-'0';ch=getchar();}
+	return x*fu;
 }
+int G[55];
+template<class T>inline void write(T x)
+{
+	int g=0;
+	if(x<0) x=-x,putchar('-');
+	do{G[++g]=x%10;x/=10;}while(x);
+	for(int i=g;i>=1;--i)putchar('0'+G[i]);putchar('\n');
+}
+char ch[22000010]={'$'};
+int n,ans;
+int r[22000010];
 int main()
 {
-	cin>>str;
- 	cout<<Manacher() << endl;
+	cin>>(ch+1);
+	n=strlen(ch+1);
+	for(int i=n;i>=1;i--) ch[i<<1]=ch[i],ch[i<<1|1]='#';
+	ch[1]='#';
+	for(int i=1,p=1,mx=1;i<=2*n+1;i++)
+	{
+		r[i]=i<mx?min(mx-i,r[2*p-i]):1;
+		while(ch[i-r[i]]==ch[i+r[i]]) r[i]++;
+		if(i+r[i]>mx)
+		{
+			mx=i+r[i];
+			p=i;
+		}
+		ans=max(ans,r[i]-1);
+	}
+	write(ans); 
 	return 0;
 }
 

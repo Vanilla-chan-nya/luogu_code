@@ -46,56 +46,28 @@ template<class T>inline void write(T x)
 	do{G[++g]=x%10;x/=10;}while(x);
 	for(int i=g;i>=1;--i)putchar('0'+G[i]);putchar('\n');
 }
-int f[9000010],sze[9000010];
-int table[9000010];
+char a[1000010],b[1000010];
+int nxt[1000010];
 int n,m;
-int getf(int x)
-{
-	if(f[x]==x) return x;
-	return f[x]=getf(f[x]);
-}
-void merge(int x,int y)
-{
-//	cout<<"+++"<<x<<" "<<y<<endl;
-	x=getf(x);
-	y=getf(y);
-	if(x!=y)
-	{
-		sze[x]+=sze[y];
-		sze[y]=0;
-		f[y]=x;
-	}
-}
-bool ask(int x,int y)
-{
-	return getf(x)==getf(y);
-}
 int main()
 {
-	n=read();
-	m=read();
-	char ch;
-	for(int i=1;i<=n;i++)
+	scanf("%s%s",a+1,b+1);
+	n=strlen(a+1);
+	m=strlen(b+1);
+	int i,j;
+	for(i=2,j=0;i<=m;i++)
 	{
-		for(int j=1;j<=n;j++)
-		{
-			ch=getchar();
-			while(ch!='1'&&ch!='0') ch=getchar();
-			if(ch=='1') table[i*1000+j]=1;
-			sze[i*1000+j]=1;
-			f[i*1000+j]=i*1000+j;
-		}
+		while(j&&b[i]!=b[j+1]) j=nxt[j];
+		if(b[i]==b[j+1]) j++;
+		nxt[i]=j;
 	}
-	for(int i=1;i<=n;i++)
-	for(int j=1;j<=n;j++)
+	for(i=1,j=0;i<=n;i++)
 	{
-		if(n-j&&table[i*1000+j]!=table[i*1000+j+1]) merge(i*1000+j,i*1000+j+1);
-		if(n-i&&table[i*1000+j]!=table[(i+1)*1000+j]) merge(i*1000+j,(i+1)*1000+j);
+		while(j&&a[i]!=b[j+1]) j=nxt[j];
+		if(a[i]==b[j+1]) j++;
+		if(j==m) cout<<i-m+1<<endl,j=nxt[j];
 	}
-	while(m--)
-	{
-		write(sze[getf(read()*1000+read())]);
-	}
+	for(i=1;i<=m;i++) cout<<nxt[i]<<" ";
 	return 0;
 }
 

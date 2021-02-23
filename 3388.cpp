@@ -46,56 +46,62 @@ template<class T>inline void write(T x)
 	do{G[++g]=x%10;x/=10;}while(x);
 	for(int i=g;i>=1;--i)putchar('0'+G[i]);putchar('\n');
 }
-int f[9000010],sze[9000010];
-int table[9000010];
+int head[20010],nxt[200010],ver[20010];
+int cnt;
+void insert(int x,int y)
+{
+	nxt[++cnt]=head[x];
+	head[x]=cnt;
+	ver[cnt]=y;
+	
+	nxt[++cnt]=head[y];
+	head[y]=cnt;
+	ver[cnt]=x;
+}
 int n,m;
-int getf(int x)
+int dfn[20010],dfncnt;
+int low[20010];
+bool online[20010];
+int stac[20010],top;
+int color[20010],col;
+void tarjan(int x)
 {
-	if(f[x]==x) return x;
-	return f[x]=getf(f[x]);
-}
-void merge(int x,int y)
-{
-//	cout<<"+++"<<x<<" "<<y<<endl;
-	x=getf(x);
-	y=getf(y);
-	if(x!=y)
+	dfn[x]=low[x]=++dfncnt;
+	online[x]=1;
+	stac[++top]=x;
+	for(int i=head[x];i;i=nxt[i])
 	{
-		sze[x]+=sze[y];
-		sze[y]=0;
-		f[y]=x;
+		if(!dfn[ver[i]])
+		{
+			tarjan(ver[i]);
+			low[x]=min(low[x],low[ver[i]]);
+		}
+		else if(online[ver[i]])
+		{
+			low[x]=min(low[x],dfn[ver[i]]);
+		}
 	}
-}
-bool ask(int x,int y)
-{
-	return getf(x)==getf(y);
+	if(dfn[x]==low[x])
+	{
+		col++;
+		while(stac[top]!=x) color[stac[top]]=col,online[stac[top]]=0,top--;
+		color[stac[top]]=col,online[stac[top]]=0,top--;
+	}
 }
 int main()
 {
 	n=read();
 	m=read();
-	char ch;
-	for(int i=1;i<=n;i++)
+	for(int i=1,a,b;i<=m;i++)
 	{
-		for(int j=1;j<=n;j++)
-		{
-			ch=getchar();
-			while(ch!='1'&&ch!='0') ch=getchar();
-			if(ch=='1') table[i*1000+j]=1;
-			sze[i*1000+j]=1;
-			f[i*1000+j]=i*1000+j;
-		}
+		a=read();
+		b=read();
+		insert(a,b);
 	}
-	for(int i=1;i<=n;i++)
-	for(int j=1;j<=n;j++)
-	{
-		if(n-j&&table[i*1000+j]!=table[i*1000+j+1]) merge(i*1000+j,i*1000+j+1);
-		if(n-i&&table[i*1000+j]!=table[(i+1)*1000+j]) merge(i*1000+j,(i+1)*1000+j);
-	}
-	while(m--)
-	{
-		write(sze[getf(read()*1000+read())]);
-	}
+	for(int i=1;i<=n;i++) if(!dfn[i]) tarjan(i);
+	int ans=0;for(int i=1;i<=n;i++) if(dfn[i]==low[i]) ans++;
+	write(ans);
+	for(int i=1;i<=n;i++) if(dfn[i]==low[i]) cout<<i<<" ";
 	return 0;
 }
 

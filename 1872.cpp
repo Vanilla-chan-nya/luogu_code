@@ -46,57 +46,74 @@ template<class T>inline void write(T x)
 	do{G[++g]=x%10;x/=10;}while(x);
 	for(int i=g;i>=1;--i)putchar('0'+G[i]);putchar('\n');
 }
-int f[9000010],sze[9000010];
-int table[9000010];
-int n,m;
-int getf(int x)
+string str,t;
+LL r[300010],pre[300010],suf[300010],sum[300010],ans;
+void init()
 {
-	if(f[x]==x) return x;
-	return f[x]=getf(f[x]);
-}
-void merge(int x,int y)
-{
-//	cout<<"+++"<<x<<" "<<y<<endl;
-	x=getf(x);
-	y=getf(y);
-	if(x!=y)
+	memset(r,0,sizeof(r));
+	memset(pre,0,sizeof(pre));
+	memset(suf,0,sizeof(suf));
+	memset(sum,0,sizeof(sum));
+	t.clear();
+	t="$#";
+	for(int i=0;i<str.size();i++)
 	{
-		sze[x]+=sze[y];
-		sze[y]=0;
-		f[y]=x;
+		t+=str[i];
+		t+='#';
 	}
+	t+='@';
+	str=t;
 }
-bool ask(int x,int y)
+void manacher()
 {
-	return getf(x)==getf(y);
+	int mx=1,p=1;
+	for(int i=1;i<str.size()-1;i++)
+	{
+		if(i<mx) r[i]=min((LL)mx-i,r[2*p-i]);
+		else r[i]=1;
+		while(str[i-r[i]]==str[i+r[i]]) r[i]++;
+		if(mx<i+r[i])
+		{
+			p=i;
+			mx=i+r[i];
+		}
+	}
 }
 int main()
 {
-	n=read();
-	m=read();
-	char ch;
-	for(int i=1;i<=n;i++)
+	cin>>str;
 	{
-		for(int j=1;j<=n;j++)
+		int len=str.size();
+		init();
+//		cout<<str<<endl;
+		manacher();
+		for(int i=2;i<=len*2;i++)
 		{
-			ch=getchar();
-			while(ch!='1'&&ch!='0') ch=getchar();
-			if(ch=='1') table[i*1000+j]=1;
-			sze[i*1000+j]=1;
-			f[i*1000+j]=i*1000+j;
+			int x=(i+1)/2;
+			suf[x]++;
+			suf[x+r[i]/2]--;
 		}
-	}
-	for(int i=1;i<=n;i++)
-	for(int j=1;j<=n;j++)
-	{
-		if(n-j&&table[i*1000+j]!=table[i*1000+j+1]) merge(i*1000+j,i*1000+j+1);
-		if(n-i&&table[i*1000+j]!=table[(i+1)*1000+j]) merge(i*1000+j,(i+1)*1000+j);
-	}
-	while(m--)
-	{
-		write(sze[getf(read()*1000+read())]);
+		for(int i=len*2;i>=2;i--)
+		{
+			int x=i/2;
+			pre[x]++;
+			pre[x-r[i]/2]--;
+		}
+		for(int i=len;i>=1;i--)
+		{
+			pre[i]+=pre[i+1];
+		}
+		for(int i=1;i<=len;i++)
+		{
+			suf[i]+=suf[i-1];
+			sum[i]=sum[i-1]+suf[i];
+		}
+		ans=0;
+		for(int i=1;i<=len;i++)
+		{
+			ans+=pre[i]*sum[i-1];
+		}
+		cout<<ans<<endl;
 	}
 	return 0;
 }
-
-

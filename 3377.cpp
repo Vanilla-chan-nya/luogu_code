@@ -7,6 +7,7 @@
 #include<set>
 #include<queue>
 #include<vector>
+#include<limits.h>
 #define IL inline
 #define re register
 #define LL long long
@@ -46,55 +47,65 @@ template<class T>inline void write(T x)
 	do{G[++g]=x%10;x/=10;}while(x);
 	for(int i=g;i>=1;--i)putchar('0'+G[i]);putchar('\n');
 }
-int f[9000010],sze[9000010];
-int table[9000010];
-int n,m;
+
+struct node
+{
+	int f,ls,rs,v,dist;
+	#define f(x) b[x].f
+	#define ls(x) b[x].ls
+	#define rs(x) b[x].rs
+	#define v(x) b[x].v
+	#define dist(x) b[x].dist
+}b[100010];
 int getf(int x)
 {
-	if(f[x]==x) return x;
-	return f[x]=getf(f[x]);
+	if(f(x)==x) return x;
+	return f(x)=getf(f(x));
 }
-void merge(int x,int y)
+int merge(int x,int y)
 {
-//	cout<<"+++"<<x<<" "<<y<<endl;
-	x=getf(x);
-	y=getf(y);
-	if(x!=y)
-	{
-		sze[x]+=sze[y];
-		sze[y]=0;
-		f[y]=x;
-	}
+	if(!x) return y;
+	if(!y) return x;
+	if(v(x)>v(y)||(v(x)==v(y)&&x>y)) swap(x,y);//let x<y
+	rs(x)=merge(rs(x),y);
+	if(dist(rs(x))>dist(ls(x))) swap(ls(x),rs(x));//liftist heap
+//	f(ls(x))=f(rs(x))=f(x)=x;
+	if(!rs(x)) dist(x)=0;
+	else dist(x)=dist(rs(x))+1;
+	return x;
 }
-bool ask(int x,int y)
+void pop(int x)
 {
-	return getf(x)==getf(y);
+	v(x)=-1;
+	f(ls(x))=ls(x);
+	f(rs(x))=rs(x);
+	f(ls(x))=f(rs(x))=f(x)=merge(ls(x),rs(x));
 }
+int n,m;
 int main()
 {
 	n=read();
 	m=read();
-	char ch;
-	for(int i=1;i<=n;i++)
+	for(int i=1;i<=n;i++) v(i)=read(),f(i)=i;
+	dist(0)=-1;
+	for(int i=1,op,x,y;i<=m;i++)
 	{
-		for(int j=1;j<=n;j++)
+		op=read();
+		if(op==1)
 		{
-			ch=getchar();
-			while(ch!='1'&&ch!='0') ch=getchar();
-			if(ch=='1') table[i*1000+j]=1;
-			sze[i*1000+j]=1;
-			f[i*1000+j]=i*1000+j;
+			x=read();
+			y=read();
+			if(v(x)==-1||v(y)==-1) continue;
+			x=getf(x);
+			y=getf(y);
+			if(x!=y) f(x)=f(y)=merge(x,y);
 		}
-	}
-	for(int i=1;i<=n;i++)
-	for(int j=1;j<=n;j++)
-	{
-		if(n-j&&table[i*1000+j]!=table[i*1000+j+1]) merge(i*1000+j,i*1000+j+1);
-		if(n-i&&table[i*1000+j]!=table[(i+1)*1000+j]) merge(i*1000+j,(i+1)*1000+j);
-	}
-	while(m--)
-	{
-		write(sze[getf(read()*1000+read())]);
+		else
+		{
+			x=read();
+			if(v(x)==-1) write(-1);
+			else x=getf(x),write(v(x)),pop(x);
+		}
 	}
 	return 0;
 }

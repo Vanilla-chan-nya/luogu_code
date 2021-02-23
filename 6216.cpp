@@ -7,6 +7,7 @@
 #include<set>
 #include<queue>
 #include<vector>
+#include<limits.h>
 #define IL inline
 #define re register
 #define LL long long
@@ -46,56 +47,53 @@ template<class T>inline void write(T x)
 	do{G[++g]=x%10;x/=10;}while(x);
 	for(int i=g;i>=1;--i)putchar('0'+G[i]);putchar('\n');
 }
-int f[9000010],sze[9000010];
-int table[9000010];
+int sum[3000010];
+int nxt[3000010];
+char ch[3000010];
+int r[3000010];
+int ans;
+char s[3000010];
 int n,m;
-int getf(int x)
-{
-	if(f[x]==x) return x;
-	return f[x]=getf(f[x]);
-}
-void merge(int x,int y)
-{
-//	cout<<"+++"<<x<<" "<<y<<endl;
-	x=getf(x);
-	y=getf(y);
-	if(x!=y)
-	{
-		sze[x]+=sze[y];
-		sze[y]=0;
-		f[y]=x;
-	}
-}
-bool ask(int x,int y)
-{
-	return getf(x)==getf(y);
-}
+
+
+/*
+20 2
+cbcaacabcbacbbabacca ba
+
+
+*/
 int main()
 {
 	n=read();
 	m=read();
-	char ch;
-	for(int i=1;i<=n;i++)
+	ch[0]='$';
+	scanf("%s%s",ch+1,s+1);
+	for(int i=2,j=0;i<=m;i++)
 	{
-		for(int j=1;j<=n;j++)
+		while(j&&s[i]!=s[j+1]) j=nxt[j];
+		if(s[i]==s[j+1]) j++;
+		nxt[i]=j;
+	}
+	for(int i=1,j=0;i<=n;i++)
+	{
+		while(j&&ch[i]!=s[j+1]) j=nxt[j];
+		if(ch[i]==s[j+1]) j++;
+		if(j==m) sum[i-m+1]++;
+	}
+//	for(int i=1;i<=n;i++) cout<<sum[i];
+	for(int i=1;i<=n;i++) sum[i]+=sum[i-1];
+	for(int i=1,p=1,mx=1;i<=n;i++)
+	{
+		r[i]=i<mx?min(mx-i,r[2*p-i]):1;
+		while(ch[i-r[i]]==ch[i+r[i]]) r[i]++;
+		if(mx<i+r[i])
 		{
-			ch=getchar();
-			while(ch!='1'&&ch!='0') ch=getchar();
-			if(ch=='1') table[i*1000+j]=1;
-			sze[i*1000+j]=1;
-			f[i*1000+j]=i*1000+j;
+			mx=i+r[i];
+			p=i;
 		}
+		ans+=sum[i+r[i]-1-m+1]-sum[i-r[i]-1];
 	}
-	for(int i=1;i<=n;i++)
-	for(int j=1;j<=n;j++)
-	{
-		if(n-j&&table[i*1000+j]!=table[i*1000+j+1]) merge(i*1000+j,i*1000+j+1);
-		if(n-i&&table[i*1000+j]!=table[(i+1)*1000+j]) merge(i*1000+j,(i+1)*1000+j);
-	}
-	while(m--)
-	{
-		write(sze[getf(read()*1000+read())]);
-	}
+	write(ans);
 	return 0;
 }
 

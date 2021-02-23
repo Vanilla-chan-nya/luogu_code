@@ -7,6 +7,7 @@
 #include<set>
 #include<queue>
 #include<vector>
+#include<limits.h>
 #define IL inline
 #define re register
 #define LL long long
@@ -46,55 +47,38 @@ template<class T>inline void write(T x)
 	do{G[++g]=x%10;x/=10;}while(x);
 	for(int i=g;i>=1;--i)putchar('0'+G[i]);putchar('\n');
 }
-int f[9000010],sze[9000010];
-int table[9000010];
+map<int,int>M;
 int n,m;
-int getf(int x)
-{
-	if(f[x]==x) return x;
-	return f[x]=getf(f[x]);
-}
-void merge(int x,int y)
-{
-//	cout<<"+++"<<x<<" "<<y<<endl;
-	x=getf(x);
-	y=getf(y);
-	if(x!=y)
-	{
-		sze[x]+=sze[y];
-		sze[y]=0;
-		f[y]=x;
-	}
-}
-bool ask(int x,int y)
-{
-	return getf(x)==getf(y);
-}
+int a[1010];
+int ans;
 int main()
 {
 	n=read();
 	m=read();
-	char ch;
 	for(int i=1;i<=n;i++)
 	{
-		for(int j=1;j<=n;j++)
-		{
-			ch=getchar();
-			while(ch!='1'&&ch!='0') ch=getchar();
-			if(ch=='1') table[i*1000+j]=1;
-			sze[i*1000+j]=1;
-			f[i*1000+j]=i*1000+j;
-		}
+		a[i]=read();
 	}
-	for(int i=1;i<=n;i++)
-	for(int j=1;j<=n;j++)
-	{
-		if(n-j&&table[i*1000+j]!=table[i*1000+j+1]) merge(i*1000+j,i*1000+j+1);
-		if(n-i&&table[i*1000+j]!=table[(i+1)*1000+j]) merge(i*1000+j,(i+1)*1000+j);
-	}
+	int op,x,y;
 	while(m--)
 	{
-		write(sze[getf(read()*1000+read())]);
+		op=read();
+		x=read();
+		y=read();
+		if(op==0)
+		{
+			M.clear();ans=0;
+			for(int i=x;i<=y;i++) M[a[i]]++;
+			for(map<int,int>::iterator it=M.begin();it!=M.end();it++)
+			{
+				if(it->second>M[ans]) ans=it->first;
+			}
+			write(ans);
+		}
+		else
+		{
+			a[x]=y;
+		}
 	}
 	return 0;
 }

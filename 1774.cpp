@@ -46,56 +46,87 @@ template<class T>inline void write(T x)
 	do{G[++g]=x%10;x/=10;}while(x);
 	for(int i=g;i>=1;--i)putchar('0'+G[i]);putchar('\n');
 }
-int f[9000010],sze[9000010];
-int table[9000010];
-int n,m;
-int getf(int x)
+int cnt;
+struct node
 {
-	if(f[x]==x) return x;
-	return f[x]=getf(f[x]);
+	int l,r;
+	int lson,rson;
+	int sum;
+	#define l(x) b[x].l
+	#define r(x) b[x].r
+	#define ls(x) b[x].lson
+	#define rs(x) b[x].rson
+	#define sum(x) b[x].sum
+}b[10000010];
+void upd(int p)
+{
+	sum(p)=sum(ls(p))+sum(rs(p));
 }
-void merge(int x,int y)
+void add(int p,int x)
 {
-//	cout<<"+++"<<x<<" "<<y<<endl;
-	x=getf(x);
-	y=getf(y);
-	if(x!=y)
+//	debug
+	if(l(p)==r(p))
 	{
-		sze[x]+=sze[y];
-		sze[y]=0;
-		f[y]=x;
+		sum(p)++;
+		return;
 	}
+	int mid=l(p)+r(p)>>1;
+	if(x<=mid)
+	{
+		if(!ls(p)) ls(p)=++cnt,l(ls(p))=l(p),r(ls(p))=mid;
+		add(ls(p),x);
+	}
+	else
+	{
+		if(!rs(p)) rs(p)=++cnt,l(rs(p))=mid+1,r(rs(p))=r(p);
+		add(rs(p),x);
+	}
+	upd(p);
 }
-bool ask(int x,int y)
+LL ask(int p,int l,int r)
 {
-	return getf(x)==getf(y);
+//	debug
+	if(l<=l(p)&&r(p)<=r)
+	{
+		return sum(p);
+	}
+	LL ans=0;
+	int mid=l(p)+r(p)>>1;
+	if(l<=mid)
+	{
+		if(ls(p)) ans+=ask(ls(p),l,r);
+	}
+	if(r>mid)
+	{
+		if(rs(p)) ans+=ask(rs(p),l,r);
+	}
+	return ans;
 }
+int a[500010];
+int n,mx;
+LL ans;
 int main()
 {
 	n=read();
-	m=read();
-	char ch;
 	for(int i=1;i<=n;i++)
 	{
-		for(int j=1;j<=n;j++)
-		{
-			ch=getchar();
-			while(ch!='1'&&ch!='0') ch=getchar();
-			if(ch=='1') table[i*1000+j]=1;
-			sze[i*1000+j]=1;
-			f[i*1000+j]=i*1000+j;
-		}
+		a[i]=read();
+		mx=max(mx,a[i]);
+		mn=min(mn,a[i]);
 	}
 	for(int i=1;i<=n;i++)
-	for(int j=1;j<=n;j++)
 	{
-		if(n-j&&table[i*1000+j]!=table[i*1000+j+1]) merge(i*1000+j,i*1000+j+1);
-		if(n-i&&table[i*1000+j]!=table[(i+1)*1000+j]) merge(i*1000+j,(i+1)*1000+j);
+		a[i]=a[i]-
 	}
-	while(m--)
+	l(cnt=1)=1;
+	r(1)=mx;
+	for(int i=1;i<=n;i++)
 	{
-		write(sze[getf(read()*1000+read())]);
+		debug		
+		ans+=ask(1,a[i]+1,mx);
+		add(1,a[i]);
 	}
+	write(ans);
 	return 0;
 }
 

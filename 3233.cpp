@@ -7,6 +7,7 @@
 #include<set>
 #include<queue>
 #include<vector>
+#include<limits.h>
 #define IL inline
 #define re register
 #define LL long long
@@ -46,56 +47,51 @@ template<class T>inline void write(T x)
 	do{G[++g]=x%10;x/=10;}while(x);
 	for(int i=g;i>=1;--i)putchar('0'+G[i]);putchar('\n');
 }
-int f[9000010],sze[9000010];
-int table[9000010];
-int n,m;
-int getf(int x)
+#define N 300010
+#define M 600010
+int n;
+int head[N],nxt[M],ver[M];
+int dis[N];
+int cnt;
+void insert(int x,int y,int z)
 {
-	if(f[x]==x) return x;
-	return f[x]=getf(f[x]);
+	nxt[++cnt]=head[x];
+	head[x]=cnt;
+	ver[cnt]=y;
+	
+	nxt[++cnt]=head[y];
+	head[y]=cnt;
+	ver[cnt]=x;
 }
-void merge(int x,int y)
+int dep[N],sze[N],f[N][21];
+void dfs1(int x)
 {
-//	cout<<"+++"<<x<<" "<<y<<endl;
-	x=getf(x);
-	y=getf(y);
-	if(x!=y)
+	dep[x]=dep[f[x][0]]+1;
+	sze[x]=1;
+	for(int j=1;j<=20;j++) f[x][j]=f[f[x][j-1]][j-1];
+	for(int i=head[x];i;i=nxt[i])
 	{
-		sze[x]+=sze[y];
-		sze[y]=0;
-		f[y]=x;
+		if(ver[i]==f[x][0]) continue;
+		dfs1(ver[i]);
+		sze[x]+=sze[ver[i]];
 	}
 }
-bool ask(int x,int y)
+void pre()
 {
-	return getf(x)==getf(y);
+	dep[1]=1;
+	dfs1(1);
+	
+}
+bool book[N];
+void dfs1(int x)
+{
+	
 }
 int main()
 {
 	n=read();
-	m=read();
-	char ch;
-	for(int i=1;i<=n;i++)
-	{
-		for(int j=1;j<=n;j++)
-		{
-			ch=getchar();
-			while(ch!='1'&&ch!='0') ch=getchar();
-			if(ch=='1') table[i*1000+j]=1;
-			sze[i*1000+j]=1;
-			f[i*1000+j]=i*1000+j;
-		}
-	}
-	for(int i=1;i<=n;i++)
-	for(int j=1;j<=n;j++)
-	{
-		if(n-j&&table[i*1000+j]!=table[i*1000+j+1]) merge(i*1000+j,i*1000+j+1);
-		if(n-i&&table[i*1000+j]!=table[(i+1)*1000+j]) merge(i*1000+j,(i+1)*1000+j);
-	}
-	while(m--)
-	{
-		write(sze[getf(read()*1000+read())]);
-	}
+	for(int i=1;i<=n;i++) insert(a,b);
+	pre();
 	return 0;
 }
 
