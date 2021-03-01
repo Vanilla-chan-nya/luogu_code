@@ -7,174 +7,190 @@
 #include<set>
 #include<queue>
 #include<vector>
+#include<limits.h>
 #define IL inline
+#define int long long
 #define re register
 #define LL long long
-#define int long long
 #define ULL unsigned long long
-#define re register
+#ifdef TH
 #define debug printf("Now is %d\n",__LINE__);
-#define IT set<node>::iterator
+#else
+#define debug
+#endif
 using namespace std;
 
 template<class T>inline void read(T&x)
 {
-    char ch=getchar();
-    while(!isdigit(ch))ch=getchar();
-    x=ch-'0';ch=getchar();
-    while(isdigit(ch)){x=x*10+ch-'0';ch=getchar();}
+	char ch=getchar();
+	int fu;
+	while(!isdigit(ch)&&ch!='-') ch=getchar();
+	if(ch=='-') fu=-1,ch=getchar();
+	x=ch-'0';ch=getchar();
+	while(isdigit(ch)){x=x*10+ch-'0';ch=getchar();}
+	x*=fu;
 }
 inline int read()
 {
-	int x=0;
-    char ch=getchar();
-    while(!isdigit(ch))ch=getchar();
-    x=ch-'0';ch=getchar();
-    while(isdigit(ch)){x=x*10+ch-'0';ch=getchar();}
-    return x;
+	int x=0,fu=1;
+	char ch=getchar();
+	while(!isdigit(ch)&&ch!='-') ch=getchar();
+	if(ch=='-') fu=-1,ch=getchar();
+	x=ch-'0';ch=getchar();
+	while(isdigit(ch)){x=x*10+ch-'0';ch=getchar();}
+	return x*fu;
 }
 int G[55];
 template<class T>inline void write(T x)
 {
-    int g=0;
-    if(x<0) x=-x,putchar('-');
-    do{G[++g]=x%10;x/=10;}while(x);
-    for(re int i=g;i>=1;--i)putchar('0'+G[i]);putchar('\n');
+	int g=0;
+	if(x<0) x=-x,putchar('-');
+	do{G[++g]=x%10;x/=10;}while(x);
+	for(int i=g;i>=1;--i)putchar('0'+G[i]);putchar('\n');
 }
-LL n,m,seed,vmax,ret;
+#define N 100010
+LL seed,vmax;
+int rnd()
+{
+	int ret=seed;
+	seed=(seed*7+13)%1000000007;
+	return ret;
+}
+int n,m;
 struct node
 {
 	int l,r;
 	mutable LL v;
-	node(int L,int R=-1,LL V=0):l(L),r(R),v(V){}
-	IL bool operator<(const node & x) const
+	node(int ll,int rr=-1,LL vv=0)
 	{
-		return l<x.l;
+		l=ll;
+		r=rr;
+		v=vv;
+	}
+	IL bool operator<(const node& z)const
+	{
+		return l<z.l;
 	}
 };
-set<node>s;
-LL a[100010];
-LL rnd()
+#define s Chtholly
+set<node>Chtholly;
+#define IT set<node>::iterator
+IT split(int x)
 {
-//	cout<<"seed="<<seed<<endl; 
-	ret=seed;
-	seed=(seed*7+13)%1000000007;
-	return ret;
-}
-IT split(int pos)
-{
-	IT it=s.lower_bound((node(pos)));
-	if(it!=s.end()&&it->l==pos) return it;
+	node tmp={x};
+	IT it=s.lower_bound(tmp);
+	if(it!=s.end()&&it->l==x) return it;
 	it--;
-	LL L=it->l,R=it->r,V=it->v;
+	LL l=it->l,r=it->r,v=it->v;
 	s.erase(it);
-	s.insert(node(L,pos-1,V));
-	debug
-	return s.insert(node(pos,R,V)).first;
+	s.insert(node(l,x-1,v));
+	return s.insert(node(x,r,v)).first;
 }
-void assign(int l,int r,LL val)
+void add(int l,int r,LL x)
 {
-	debug
 	IT itr=split(r+1);
-	debug 
 	IT itl=split(l);
-	debug
+	for(;itl!=itr;itl++)
+	{
+		itl->v+=x;
+	}
+}
+void assign(int l,int r,LL x)
+{
+	IT itr=split(r+1);
+	IT itl=split(l);
 	s.erase(itl,itr);
-	debug
-	s.insert(node(l,r,val));
-	debug;
+	s.insert(node(l,r,x));
 }
-void add(int l,int r,LL val=1)
+vector<pair<LL,LL> >vec;
+int k_th(int l,int r,int k)
 {
-	IT itl=split(l),itr=split(r+1);
-	for(;itl!=itr;++itl) itl->v+=val;
-	debug;
-}
-LL rnk(int l,int r,int k)
-{
-	vector< pair<LL,int> >vp;
-	IT itl=split(l),itr=split(r+1);
-	for(;itl!=itr;++itl)
-		vp.push_back(pair<LL,int>(itl->v,itl->r-itl->l+1));
-	sort(vp.begin(),vp.end());
-	debug;
-	for(LL i=0;i<vp.size();i++)
+	vec.clear();
+	IT itr=split(r+1);
+	IT itl=split(l);
+	for(;itl!=itr;itl++)
 	{
-		k-=vp[i].second;
-		if(k<=0) return vp[i].first;
+		vec.push_back(make_pair(itl->v,itl->r-itl->l+1));
 	}
-	return -1LL;
-}
-inline long long qpow(long long a,long long b,long long p){
-    long long ans=1;
-    a%=p;
-    while(b){
-        if(b&1){
-        	ans=ans*a%p;
-		}
-        a=a*a%p;
-    	b>>=1;
-    }
-    return ans;
-}
-LL sum(int l,int r,int ex,int mod)
-{
-	IT itl=split(l),itr=split(r+1);
-	LL res=0;
-	for(;itl!=itr;++itl)
+	sort(vec.begin(),vec.end());
+	for(LL i=0;i<vec.size();i++)
 	{
-		res=(res+(itl->r-itl->l+1)*qpow(itl->v,ex,mod))%mod;
+		k-=vec[i].second;
+		if(k<=0) return vec[i].first;
 	}
-	return res;
+	return -2147483647;
 }
+LL qpow(LL a,LL b,LL p)
+{
+	LL ans=1;
+	a%=p;
+	while(b)
+	{
+		if(b&1) ans=ans*a%p;
+		a=a*a%p;
+		b>>=1;
+	}
+	return ans%p;
+}
+LL powsum(int l,int r,LL x,LL y)
+{
+	LL ans=0;
+	IT itr=split(r+1);
+	IT itl=split(l);
+	for(;itl!=itr;itl++)
+	{
+		ans+=qpow(itl->v,x,y)*(itl->r-itl->l+1);
+		ans%=y;
+	}
+	return ans;
+}
+LL a[N];
 signed main()
 {
-//	freopen(".in","r",stdin);
-//	freopen(".out","w",stdout);
-	cin>>n>>m>>seed>>vmax;
-	for(int i=1;i<=n;i++)
+	n=read();
+	m=read();
+	seed=read();
+	vmax=read();
+	for(LL i=1;i<=n;i++)
 	{
-		a[i]=(rnd()%vmax)+1;
+		a[i]=rnd()%vmax+1;
 		s.insert(node(i,i,a[i]));
-//		debug;
 	}
-	int op,l,r;
-	while(m--)
+	LL op,l,r,x,y;
+	for(LL i=1;i<=m;i++)
 	{
 		op=(rnd()%4)+1;
-		l=(rnd()%n)+1;
-		r=(rnd()%n)+1;
+		l=rnd()%n+1;
+		r=rnd()%n+1;
 		if(l>r) swap(l,r);
-		cout<<"op="<<op<<" l="<<l<<" r="<<r<<endl;
-		debug;
-		int x,y;
-//		debug;
+//		cout<<"op="<<op<<" l="<<l<<" r="<<r<<endl;
+		if(op==3) x=rnd()%(r-l+1)+1;
+		else x=rnd()%vmax+1;
+		if(op==4) y=rnd()%vmax+1;
+		
 		if(op==1)
 		{
-			x=rnd()%vmax+1;
 			add(l,r,x);
 		}
-//		debug;
 		if(op==2)
 		{
-//			debug;
-			x=rnd()%vmax+1;
+//			cout<<" x="<<x<<endl;
 			assign(l,r,x);
 		}
 		if(op==3)
 		{
-//			debug;
-		x=rnd()%(r-l+1)+1;
-			cout<<rnk(l,r,x)<<endl;
+			write(k_th(l,r,x));
 		}
 		if(op==4)
 		{
-//			debug;
-			x=rnd()%(r-l+1)+1;
-			y=rnd()%vmax+1;
-			cout<<sum(l,r,x,y)<<endl;
+			write(powsum(l,r,x,y));
 		}
+//		for(IT it=s.begin();it!=s.end();it++)
+//		{
+//			cout<<"l="<<it->l<<" r="<<it->r<<" v="<<it->v<<endl;
+//		}
 	}
 	return 0;
 }
+
 

@@ -47,55 +47,18 @@ template<class T>inline void write(T x)
 	do{G[++g]=x%10;x/=10;}while(x);
 	for(int i=g;i>=1;--i)putchar('0'+G[i]);putchar('\n');
 }
-int f[30010],sze[30010],dis[30010];
-int getf(int x)
-{
-	if(f[x]==x) return x;
-	int xx=getf(f[x]);
-	dis[x]+=dis[f[x]];
-	return f[x]=xx;
-}
-void merge(int x,int y)
-{
-	x=getf(x);
-	y=getf(y);
-	dis[x]+=sze[y];
-	f[x]=y;
-	sze[y]+=sze[x];
-	sze[x]=0;
-}
-bool ask(int x,int y)
-{
-	x=getf(x);
-	y=getf(y);
-	return x==y;
-}
-int T;
+double n,m,xm;
 int main()
 {
-	T=read();
-	for(int i=1;i<=30000;i++)
+	cin>>n>>m;
+	xm=1;
+	re int i;
+	for(i=1;;i++)
 	{
-		f[i]=i;
-		dis[i]=0;
-		sze[i]=1;
+		xm=pow(i,m);
+		if(xm>n) break;
 	}
-	while(T--)
-	{
-		char op=getchar();
-		while(op!='C'&&op!='M') op=getchar();
-		int x=read();
-		int y=read();
-		if(op=='M')
-		{
-			merge(x,y);
-		}
-		else
-		{
-			if(ask(x,y)) write(abs(dis[x]-dis[y])-1);
-			else cout<<"-1"<<endl; 
-		}
-	}
+	write(i-1);
 	
 	return 0;
 }

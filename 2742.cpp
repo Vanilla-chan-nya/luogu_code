@@ -47,56 +47,53 @@ template<class T>inline void write(T x)
 	do{G[++g]=x%10;x/=10;}while(x);
 	for(int i=g;i>=1;--i)putchar('0'+G[i]);putchar('\n');
 }
-int f[30010],sze[30010],dis[30010];
-int getf(int x)
+struct Point
 {
-	if(f[x]==x) return x;
-	int xx=getf(f[x]);
-	dis[x]+=dis[f[x]];
-	return f[x]=xx;
-}
-void merge(int x,int y)
+	double x,y;
+	IL void in()
+	{
+		cin>>x>>y;
+	}
+}a[100010];
+double check(Point a1,Point a2,Point b1,Point b2)
 {
-	x=getf(x);
-	y=getf(y);
-	dis[x]+=sze[y];
-	f[x]=y;
-	sze[y]+=sze[x];
-	sze[x]=0;
+	 return (a2.x-a1.x)*(b2.y-b1.y)-(b2.x-b1.x)*(a2.y-a1.y);
 }
-bool ask(int x,int y)
+double dis(Point i,Point j)
 {
-	x=getf(x);
-	y=getf(y);
-	return x==y;
+	return sqrt((i.x-j.x)*(i.x-j.x)+(i.y-j.y)*(i.y-j.y));
 }
-int T;
+IL bool cmp(Point i,Point j)
+{
+	double temp=check(a[1],i,a[1],j);
+	if(temp>0) return 1;//i<j
+	if(temp==0&&dis(a[1],i)<dis(a[1],j)) return 1;
+	return 0;
+}
+int n;
+int s;
+int stac[100010],top;
 int main()
 {
-	T=read();
-	for(int i=1;i<=30000;i++)
+	n=read();
+	s=1;
+	for(int i=1;i<=n;i++)
 	{
-		f[i]=i;
-		dis[i]=0;
-		sze[i]=1;
+		a[i].in();
+		if(a[i].y<a[s].y||(a[i].y==a[s].y&&a[i].x<a[s].x)) s=i;
 	}
-	while(T--)
+	swap(a[1],a[s]);
+	sort(a+2,a+n+1,cmp);
+	stac[++top]=1;
+	for(int i=2;i<=n;i++)
 	{
-		char op=getchar();
-		while(op!='C'&&op!='M') op=getchar();
-		int x=read();
-		int y=read();
-		if(op=='M')
-		{
-			merge(x,y);
-		}
-		else
-		{
-			if(ask(x,y)) write(abs(dis[x]-dis[y])-1);
-			else cout<<"-1"<<endl; 
-		}
+		while(top>1&&check(a[stac[top-1]],a[stac[top]],a[stac[top]],a[i])<=0) top--;
+		stac[++top]=i;
 	}
-	
+	stac[++top]=1;
+	double ans=0;
+	for(int i=1;i<top;i++) ans+=dis(a[stac[i]],a[stac[i+1]]);
+	printf("%.2lf",ans);
 	return 0;
 }
 

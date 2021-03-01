@@ -47,56 +47,41 @@ template<class T>inline void write(T x)
 	do{G[++g]=x%10;x/=10;}while(x);
 	for(int i=g;i>=1;--i)putchar('0'+G[i]);putchar('\n');
 }
-int f[30010],sze[30010],dis[30010];
-int getf(int x)
+int n,m;
+LL b[60],tot;
+void insert(LL x)
 {
-	if(f[x]==x) return x;
-	int xx=getf(f[x]);
-	dis[x]+=dis[f[x]];
-	return f[x]=xx;
+	for(int i=floor(log2(x))+1;i>=0;i--)
+	{
+		if((x>>i)&1)
+		{
+			if(!b[i])
+			{
+				b[i]=x;
+				tot++;
+				return;
+			}
+			else x^=b[i];
+		}
+	}
 }
-void merge(int x,int y)
-{
-	x=getf(x);
-	y=getf(y);
-	dis[x]+=sze[y];
-	f[x]=y;
-	sze[y]+=sze[x];
-	sze[x]=0;
-}
-bool ask(int x,int y)
-{
-	x=getf(x);
-	y=getf(y);
-	return x==y;
-}
-int T;
+char ch[60];
 int main()
 {
-	T=read();
-	for(int i=1;i<=30000;i++)
+	n=read();
+	m=read();
+	for(int i=1;i<=m;i++)
 	{
-		f[i]=i;
-		dis[i]=0;
-		sze[i]=1;
-	}
-	while(T--)
-	{
-		char op=getchar();
-		while(op!='C'&&op!='M') op=getchar();
-		int x=read();
-		int y=read();
-		if(op=='M')
+		cin>>ch;
+		LL x=0;
+		int len=strlen(ch);
+		for(int j=len-1;j>=0;j--)
 		{
-			merge(x,y);
+			if(ch[j]=='O')x+=(1ll<<(len-j));
 		}
-		else
-		{
-			if(ask(x,y)) write(abs(dis[x]-dis[y])-1);
-			else cout<<"-1"<<endl; 
-		}
+		insert(x);
 	}
-	
+	cout<<(1ll<<tot)%2008;
 	return 0;
 }
 

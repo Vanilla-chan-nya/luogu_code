@@ -104,6 +104,7 @@ int main(){
 			add(l,r,x);
 		}
 		if (op==2){
+			cout<<" x="<<x<<endl;
 			assign(l,r,x);
 		}
 		if (op==3){
@@ -112,5 +113,11 @@ int main(){
 		if (op==4){
 			cout<<query_pow_sum(l,r,x,y)<<endl;
 		}
+		
+		for(set<node>::iterator it=s.begin();it!=s.end();it++)
+		{
+			cout<<"l="<<it->l<<" r="<<it->r<<" v="<<it->num<<endl;
+		}
+		
 	}
 }

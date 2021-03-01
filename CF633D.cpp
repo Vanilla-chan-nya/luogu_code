@@ -4,6 +4,7 @@
 #include<cstring>
 #include<cmath>
 #include<map>
+#include<tr1/unordered_map>
 #include<set>
 #include<queue>
 #include<vector>
@@ -47,56 +48,36 @@ template<class T>inline void write(T x)
 	do{G[++g]=x%10;x/=10;}while(x);
 	for(int i=g;i>=1;--i)putchar('0'+G[i]);putchar('\n');
 }
-int f[30010],sze[30010],dis[30010];
-int getf(int x)
-{
-	if(f[x]==x) return x;
-	int xx=getf(f[x]);
-	dis[x]+=dis[f[x]];
-	return f[x]=xx;
-}
-void merge(int x,int y)
-{
-	x=getf(x);
-	y=getf(y);
-	dis[x]+=sze[y];
-	f[x]=y;
-	sze[y]+=sze[x];
-	sze[x]=0;
-}
-bool ask(int x,int y)
-{
-	x=getf(x);
-	y=getf(y);
-	return x==y;
-}
-int T;
+int n;
+#define N 1010
+int a[N];
+/*tr1::unordered_*/map<int,int>s,temp;
+int ans;
 int main()
 {
-	T=read();
-	for(int i=1;i<=30000;i++)
+	n=read();
+	for(int i=1;i<=n;i++) a[i]=read(),s[a[i]]++;
+	if(s.find(0)!=s.end()) ans=max(ans,s[0]);
+	sort(a+1,a+n+1);
+	for(re int i=1;i<=n;i++)
+	for(re int j=1;j<=n&&(i<=1||a[i]!=a[i-1]);j++)
 	{
-		f[i]=i;
-		dis[i]=0;
-		sze[i]=1;
-	}
-	while(T--)
-	{
-		char op=getchar();
-		while(op!='C'&&op!='M') op=getchar();
-		int x=read();
-		int y=read();
-		if(op=='M')
+		if(i==j) continue;
+		if(a[i]==0&&a[j]==0) continue;
+		temp.clear();
+		int cnt=2;
+		int x=a[j],y=a[i]+a[j];
+		temp[a[i]]++;temp[a[j]]++;
+		while(temp[y]<s[y])
 		{
-			merge(x,y);
+			cnt++;
+			temp[y]++;
+			x^=y^=x^=y;
+			y+=x;
 		}
-		else
-		{
-			if(ask(x,y)) write(abs(dis[x]-dis[y])-1);
-			else cout<<"-1"<<endl; 
-		}
+		ans=max(ans,cnt);
 	}
-	
+	write(ans);
 	return 0;
 }
 

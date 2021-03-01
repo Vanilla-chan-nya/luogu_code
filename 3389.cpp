@@ -47,56 +47,56 @@ template<class T>inline void write(T x)
 	do{G[++g]=x%10;x/=10;}while(x);
 	for(int i=g;i>=1;--i)putchar('0'+G[i]);putchar('\n');
 }
-int f[30010],sze[30010],dis[30010];
-int getf(int x)
+#define N 110
+//bool book[N];
+double a[N][N];
+int n;
+void Guess()
 {
-	if(f[x]==x) return x;
-	int xx=getf(f[x]);
-	dis[x]+=dis[f[x]];
-	return f[x]=xx;
+	for(int i=1;i<=n;i++)
+	{
+		//let a[i][i] max
+		//find a[mx][i] in [i,n]
+		int mx=i;
+		for(int j=i+1;j<=n;j++)
+		{
+			if(fabs(a[j][i])>fabs(a[mx][i])) mx=j;
+		}
+		//swap(a[i],a[mx])
+		for(int j=1;j<=n+1;j++)
+		{
+			swap(a[i][j],a[mx][j]);
+		}
+		if(!a[i][i])
+		{
+			cout<<"No Solution"<<endl;
+			exit(0);
+		}
+		for(int j=1;j<=n;j++)
+		{
+			if(i==j) continue;
+			for(int k=i+1;k<=n+1;k++)
+			{
+				a[j][k]-=a[i][k]*a[j][i]/a[i][i];
+			}
+		}
+	}
+	for(int i=1;i<=n;i++)
+	{
+		printf("%.2lf\n",a[i][n+1]/a[i][i]);
+	}
 }
-void merge(int x,int y)
-{
-	x=getf(x);
-	y=getf(y);
-	dis[x]+=sze[y];
-	f[x]=y;
-	sze[y]+=sze[x];
-	sze[x]=0;
-}
-bool ask(int x,int y)
-{
-	x=getf(x);
-	y=getf(y);
-	return x==y;
-}
-int T;
 int main()
 {
-	T=read();
-	for(int i=1;i<=30000;i++)
+	n=read();
+	for(int i=1;i<=n;i++)
 	{
-		f[i]=i;
-		dis[i]=0;
-		sze[i]=1;
-	}
-	while(T--)
-	{
-		char op=getchar();
-		while(op!='C'&&op!='M') op=getchar();
-		int x=read();
-		int y=read();
-		if(op=='M')
+		for(int j=1;j<=n+1;j++)
 		{
-			merge(x,y);
-		}
-		else
-		{
-			if(ask(x,y)) write(abs(dis[x]-dis[y])-1);
-			else cout<<"-1"<<endl; 
+			cin>>a[i][j];
 		}
 	}
-	
+	Guess();
 	return 0;
 }
 

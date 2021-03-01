@@ -47,56 +47,46 @@ template<class T>inline void write(T x)
 	do{G[++g]=x%10;x/=10;}while(x);
 	for(int i=g;i>=1;--i)putchar('0'+G[i]);putchar('\n');
 }
-int f[30010],sze[30010],dis[30010];
-int getf(int x)
+int n;
+struct node
 {
-	if(f[x]==x) return x;
-	int xx=getf(f[x]);
-	dis[x]+=dis[f[x]];
-	return f[x]=xx;
-}
-void merge(int x,int y)
+	LL num,magic;
+	IL bool operator<(const node& z)const
+	{
+		return magic>z.magic;
+	}
+}a[100010];
+LL b[63];
+int ans;
+bool insert(LL x)
 {
-	x=getf(x);
-	y=getf(y);
-	dis[x]+=sze[y];
-	f[x]=y;
-	sze[y]+=sze[x];
-	sze[x]=0;
+	for(int i=floor(log2(x))+1;i>=0;i--)
+	{
+		if((x>>i)&1)
+		{
+			if(!b[i])
+			{
+				b[i]=x;
+				return 1;
+			}
+			else x^=b[i];
+		}
+	}
+	return 0;
 }
-bool ask(int x,int y)
-{
-	x=getf(x);
-	y=getf(y);
-	return x==y;
-}
-int T;
 int main()
 {
-	T=read();
-	for(int i=1;i<=30000;i++)
+	n=read();
+	for(int i=1;i<=n;i++)
 	{
-		f[i]=i;
-		dis[i]=0;
-		sze[i]=1;
+		cin>>a[i].num>>a[i].magic;
 	}
-	while(T--)
+	sort(a+1,a+n+1);
+	for(int i=1;i<=n;i++)
 	{
-		char op=getchar();
-		while(op!='C'&&op!='M') op=getchar();
-		int x=read();
-		int y=read();
-		if(op=='M')
-		{
-			merge(x,y);
-		}
-		else
-		{
-			if(ask(x,y)) write(abs(dis[x]-dis[y])-1);
-			else cout<<"-1"<<endl; 
-		}
+		if(insert(a[i].num)) ans+=a[i].magic;
 	}
-	
+	cout<<ans;
 	return 0;
 }
 

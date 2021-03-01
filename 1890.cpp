@@ -50,40 +50,26 @@ template<class T>inline void write(T x)
 int n,m;
 struct node
 {
-	int l,r,sum;
-	IL int size()
-	{
-		return r-l+1;
-	}
-	bool lazy;
-	#define size(x) b[x].size()
+	int l,r,v;
 	#define l(x) b[x].l
 	#define r(x) b[x].r
-	#define sum(x) b[x].sum
-	#define lazy(x) b[x].lazy
-}b[400010];
-IL void upd(int p)
+	#define v(x) b[x].v
+}b[4010];
+int gcd(int a,int b)
 {
-	sum(p)=sum(p<<1)+sum(p<<1|1);
+	if(b) return gcd(b,a%b);
+	return a;
 }
-void spread(int p)
+void upd(int p)
 {
-	if(lazy(p))
-	{
-		lazy(p<<1)^=1;
-		lazy(p<<1|1)^=1;
-		sum(p<<1)=size(p<<1)-sum(p<<1);
-		sum(p<<1|1)=size(p<<1|1)-sum(p<<1|1);
-		lazy(p)=0;
-	}
+	v(p)=gcd(v(p<<1),v(p<<1|1));
 }
 void build(int p,int l,int r)
 {
-	l(p)=l;
-	r(p)=r;
+	l(p)=l,r(p)=r;
 	if(l==r)
 	{
-		sum(p)=0;
+		v(p)=read();
 		return;
 	}
 	int mid=l+r>>1;
@@ -91,30 +77,15 @@ void build(int p,int l,int r)
 	build(p<<1|1,mid+1,r);
 	upd(p);
 }
-void change(int p,int l,int r)
-{
-	if(l<=l(p)&&r(p)<=r)
-	{
-		lazy(p)^=1;
-		sum(p)=size(p)-sum(p);
-		return;
-	}
-	spread(p);
-	int mid=l(p)+r(p)>>1;
-	if(l<=mid) change(p<<1,l,r);
-	if(r>mid) change(p<<1|1,l,r);
-	upd(p);
-}
 int ask(int p,int l,int r)
 {
 	if(l<=l(p)&&r(p)<=r)
 	{
-		return sum(p);
+		return v(p);
 	}
-	spread(p);
 	int mid=l(p)+r(p)>>1,ans=0;
-	if(l<=mid) ans+=ask(p<<1,l,r);
-	if(r>mid) ans+=ask(p<<1|1,l,r);
+	if(l<=mid) ans=gcd(ask(p<<1,l,r),ans);
+	if(r>mid) ans=gcd(ask(p<<1|1,l,r),ans);
 	return ans;
 }
 int main()
@@ -122,18 +93,11 @@ int main()
 	n=read();
 	m=read();
 	build(1,1,n);
-	for(int i=1,op,x,y;i<=m;i++)
+	for(int i=1;i<=m;i++)
 	{
-		op=read();
-		x=read();
-		y=read();
-		if(op==0)
-		{
-			change(1,x,y);
-		}
-		else write(ask(1,x,y));
+		int a=read(),b=read();
+		write(ask(1,a,b));
 	}
-	
 	return 0;
 }
 
