@@ -1,3 +1,8 @@
+/**************************************************************
+ * Problem: 3384
+ * Author: Vanilla_chan
+ * Date: 20210306
+**************************************************************/
 #include<iostream>
 #include<algorithm>
 #include<cstdio>
@@ -7,112 +12,113 @@
 #include<set>
 #include<queue>
 #include<vector>
+#include<limits.h>
 #define IL inline
 #define re register
 #define LL long long
 #define ULL unsigned long long
-#define re register
+#ifdef TH
 #define debug printf("Now is %d\n",__LINE__);
+#else
+#define debug 
+#endif
+#ifdef ONLINE_JUDGE
+char buf[1<<23],* p1=buf,* p2=buf,obuf[1<<23],* O=obuf;
+#define getchar() (p1==p2&&(p2=(p1=buf)+fread(buf,1,1<<21,stdin),p1==p2)?EOF:*p1++)
+#endif
 using namespace std;
 
+template<class T>inline void read(T& x)
+{
+	char ch=getchar();
+	int fu;
+	while(!isdigit(ch)&&ch!='-') ch=getchar();
+	if(ch=='-') fu=-1,ch=getchar();
+	x=ch-'0';ch=getchar();
+	while(isdigit(ch)) { x=x*10+ch-'0';ch=getchar(); }
+	x*=fu;
+}
 inline int read()
 {
-	int x=0;
-    char ch=getchar();
-    while(!isdigit(ch))ch=getchar();
-    x=ch-'0';ch=getchar();
-    while(isdigit(ch)){x=x*10+ch-'0';ch=getchar();}
-    return x;
+	int x=0,fu=1;
+	char ch=getchar();
+	while(!isdigit(ch)&&ch!='-') ch=getchar();
+	if(ch=='-') fu=-1,ch=getchar();
+	x=ch-'0';ch=getchar();
+	while(isdigit(ch)) { x=x*10+ch-'0';ch=getchar(); }
+	return x*fu;
 }
 int G[55];
 template<class T>inline void write(T x)
 {
-    int g=0;
-    if(x<0) x=-x,putchar('-');
-    do{G[++g]=x%10;x/=10;}while(x);
-    for(re int i=g;i>=1;--i)putchar('0'+G[i]);putchar('\n');
+	int g=0;
+	if(x<0) x=-x,putchar('-');
+	do { G[++g]=x%10;x/=10; } while(x);
+	for(int i=g;i>=1;--i)putchar('0'+G[i]);putchar('\n');
 }
-int n,m,r,mod;
 #define N 100010
-int sze[N],dep[N],f[N];
-int head[N],nxt[N*2],ver[N*2],cnt;
+int n,m,r,mod;
+int a[N];
+int head[N],ver[N<<1],nxt[N<<1],cnt;
 void insert(int x,int y)
 {
 	nxt[++cnt]=head[x];
 	head[x]=cnt;
 	ver[cnt]=y;
-	
+
 	nxt[++cnt]=head[y];
 	head[y]=cnt;
 	ver[cnt]=x;
 }
-int dfn[N],dfncnt,son[N],top[N],rev[N];
-int w[N];
-void dfs1(int x,int fa)
+int f[N],sze[N],son[N],dep[N];
+void dfs1(int x)
 {
-	f[x]=fa;
 	sze[x]=1;
 	dep[x]=dep[f[x]]+1;
 	for(int i=head[x];i;i=nxt[i])
 	{
 		if(ver[i]==f[x]) continue;
-		dfs1(ver[i],x);
+		f[ver[i]]=x;
+		dfs1(ver[i]);
 		sze[x]+=sze[ver[i]];
-		if(sze[ver[i]]>sze[son[x]]) son[x]=ver[i];
+		if(sze[son[x]]<sze[ver[i]]) son[x]=ver[i];
 	}
 }
-/*
-extra-calc son of root in dfs2
-*/
-void dfs2(int x)
+int top[N];
+int dfn[N],dfncnt,id[N];
+void dfs2(int x,int tt)
 {
-	dfn[x]=++dfncnt;
-	rev[dfncnt]=x;
-	if(son[x]) top[son[x]]=top[x],dfs2(son[x]);
+	dfn[++dfncnt]=x;
+	id[x]=dfncnt;
+	top[x]=tt;
+	if(!son[x]) return;
+	dfs2(son[x],tt);
 	for(int i=head[x];i;i=nxt[i])
 	{
-		if(ver[i]==f[x]||ver[i]==son[x]) continue;// == if(!top[ver[i]]) continue;
-		top[ver[i]]=ver[i];
-		dfs2(ver[i]);
+		if(ver[i]==f[x]||ver[i]==son[x]) continue;
+		dfs2(ver[i],ver[i]);
 	}
 }
 struct node
 {
-	int l,r,v;
-	int lazy;
-	IL int size()
-	{
-		return r-1+1;
-	}
-	#define l(p) b[p].l
-	#define r(p) b[p].r
-	#define v(p) b[p].v
-	#define lazy(p) b[p].lazy
-	#define size(p) b[p].size()
-}b[4*N];
-void spread(int p)
+	int l,r,v,lazy;
+#define l(x) b[x].l
+#define r(x) b[x].r
+#define v(x) b[x].v
+#define lazy(x) b[x].lazy
+}b[N<<2];
+IL void upd(int p)
 {
-	if(lazy(p))
-	{
-		v(p<<1)+=lazy(p)*size(p<<1);
-		v(p<<1|1)+=lazy(p)*size(p<<1|1);
-		lazy(p<<1)+=lazy(p);
-		lazy(p<<1|1)+=lazy(p);
-		lazy(p)=0;
-	}
-}
-void upd(int p)
-{
-	spread(p);
 	v(p)=v(p<<1)+v(p<<1|1);
 	v(p)%=mod;
 }
 void build(int p,int l,int r)
 {
-	l(p)=l,r(p)=r;
+	l(p)=l;
+	r(p)=r;
 	if(l==r)
 	{
-		v(p)=w[rev[l]];
+		v(p)=a[dfn[l]]%mod;
 		return;
 	}
 	int mid=l+r>>1;
@@ -120,19 +126,37 @@ void build(int p,int l,int r)
 	build(p<<1|1,mid+1,r);
 	upd(p);
 }
-void add(int p,int l,int r,int w)
+void spread(int p)
 {
+	if(lazy(p))
+	{
+		lazy(p<<1)+=lazy(p);
+		lazy(p<<1|1)+=lazy(p);
+		v(p<<1)+=lazy(p)*(r(p<<1)-l(p<<1)+1);
+		v(p<<1|1)+=lazy(p)*(r(p<<1|1)-l(p<<1|1)+1);
+		v(p<<1)%=mod;
+		v(p<<1|1)%=mod;
+		lazy(p)=0;
+	}
+}
+void add(int p,int l,int r,int k)
+{
+	//debug cout<<"p="<<p<<" l="<<l(p)<<" r="<<r(p)<<endl;
 	if(l<=l(p)&&r(p)<=r)
 	{
-		v(p)+=w*size(p);
-		lazy(p)+=w;
+		lazy(p)+=k;
+		lazy(p)%=mod;
+		v(p)+=k*(r(p)-l(p)+1);
+		v(p)%=mod;
 		return;
 	}
+	spread(p);
 	int mid=l(p)+r(p)>>1;
-	if(l<=mid) add(p<<1,l,r,w);
-	if(r>mid) add(p<<1|1,l,r,w);
+	if(l<=mid) add(p<<1,l,r,k);
+	if(r>mid) add(p<<1|1,l,r,k);
+	upd(p);
 }
-int sum(int p,int l,int r)
+int ask(int p,int l,int r)
 {
 	if(l<=l(p)&&r(p)<=r)
 	{
@@ -140,87 +164,72 @@ int sum(int p,int l,int r)
 	}
 	spread(p);
 	int mid=l(p)+r(p)>>1,ans=0;
-	if(l<=mid) ans+=sum(p<<1,l,r);
-	if(r>mid) ans+=sum(p<<1|1,l,r);
-	return ans;
+	if(l<=mid) ans+=ask(p<<1,l,r);
+	if(r>mid) ans+=ask(p<<1|1,l,r);
+	return ans%mod;
 }
-int ask1(int x,int y)
-{
-	int ans=0;
-	while(top[x]!=top[y])
-	{
-		if(dep[top[x]]<dep[top[y]]) swap(x,y);
-		ans+=sum(1,dfn[top[x]],dfn[x]);
-		ans%=mod;
-		x=f[top[x]];
-	}
-	if(dep[x]<dep[y]) swap(x,y);
-	ans+=sum(1,dfn[y],dfn[x]);
-	return ans;
-}
-void add1(int x,int y,int z)
-{
-	while(top[x]!=top[y])
-	{
-		if(dep[top[x]]<dep[top[y]]) swap(x,y);
-		add(1,dfn[top[x]],dfn[x],z);
-		x=f[top[x]];
-	}
-	if(dep[x]<dep[y]) swap(x,y);
-	add(1,dfn[y],dfn[x],z);
-}
-int ask2(int x)
-{
-	return sum(1,dfn[x],dfn[x]+sze[x]-1);
-}
-void add2(int x,int z)
-{
-	add(1,dfn[x],dfn[x]+sze[x]-1,z);
-}
+LL ans;
 int main()
 {
-	n=read();
-	m=read();
-	r=read();
-	mod=read();
-	for(int i=1;i<=n;i++)
-	{
-		w[i]=read();
-	}
+	cin>>n>>m>>r>>mod;
+	for(int i=1;i<=n;i++) a[i]=read();
 	for(int i=1,a,b;i<n;i++)
 	{
 		a=read();
 		b=read();
 		insert(a,b);
 	}
-	dfs1(1,0);
-	dfs2(1);
+	dep[r]=1;
+	dfs1(r);
+	dfs2(r,r);
 	build(1,1,n);
-	for(int i=1,op,x,y,z;i<=m;i++)
+	int op,x,y,z;
+	while(m--)
 	{
+		debug
 		op=read();
 		x=read();
 		if(op==1)
 		{
 			y=read();
 			z=read();
-			add1(x,y,z);
+
+			z%=mod;
+			while(top[x]!=top[y])
+			{
+				if(dep[top[x]]<dep[top[y]]) swap(x,y);
+				add(1,id[top[x]],id[x],z);
+				x=f[top[x]];
+			}
+			if(dep[x]>dep[y]) swap(x,y);
+			add(1,id[x],id[y],z);
 		}
 		else if(op==2)
 		{
 			y=read();
-			write(ask1(x,y));
+			ans=0;
+			while(top[x]!=top[y])
+			{
+				if(dep[top[x]]<dep[top[y]]) swap(x,y);
+				ans+=ask(1,id[top[x]],id[x]);
+				ans%=mod;
+				x=f[top[x]];
+			}
+			if(dep[x]>dep[y]) swap(x,y);
+			ans+=ask(1,id[x],id[y]);
+			write(ans%mod);
 		}
 		else if(op==3)
 		{
 			z=read();
-			add2(x,z);
+			add(1,id[x],id[x]+sze[x]-1,z);
 		}
-		else
+		else if(op==4)
 		{
-			write(ask2(x));
+			write(ask(1,id[x],id[x]+sze[x]-1));
 		}
 	}
 	return 0;
 }
+
 

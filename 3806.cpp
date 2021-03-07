@@ -1,3 +1,8 @@
+/**************************************************************
+ * Problem: P3806
+ * Author: Vanilla_chan
+ * Date: 20210305
+**************************************************************/
 #include<iostream>
 #include<algorithm>
 #include<cstdio>
@@ -15,18 +20,22 @@
 #ifdef TH
 #define debug printf("Now is %d\n",__LINE__);
 #else
-#define debug
+#define debug 
+#endif
+#ifdef ONLINE_JUDGE
+char buf[1<<23],* p1=buf,* p2=buf,obuf[1<<23],* O=obuf;
+#define getchar() (p1==p2&&(p2=(p1=buf)+fread(buf,1,1<<21,stdin),p1==p2)?EOF:*p1++)
 #endif
 using namespace std;
 
-template<class T>inline void read(T&x)
+template<class T>inline void read(T& x)
 {
 	char ch=getchar();
 	int fu;
 	while(!isdigit(ch)&&ch!='-') ch=getchar();
 	if(ch=='-') fu=-1,ch=getchar();
 	x=ch-'0';ch=getchar();
-	while(isdigit(ch)){x=x*10+ch-'0';ch=getchar();}
+	while(isdigit(ch)) { x=x*10+ch-'0';ch=getchar(); }
 	x*=fu;
 }
 inline int read()
@@ -36,7 +45,7 @@ inline int read()
 	while(!isdigit(ch)&&ch!='-') ch=getchar();
 	if(ch=='-') fu=-1,ch=getchar();
 	x=ch-'0';ch=getchar();
-	while(isdigit(ch)){x=x*10+ch-'0';ch=getchar();}
+	while(isdigit(ch)) { x=x*10+ch-'0';ch=getchar(); }
 	return x*fu;
 }
 int G[55];
@@ -44,13 +53,13 @@ template<class T>inline void write(T x)
 {
 	int g=0;
 	if(x<0) x=-x,putchar('-');
-	do{G[++g]=x%10;x/=10;}while(x);
+	do { G[++g]=x%10;x/=10; } while(x);
 	for(int i=g;i>=1;--i)putchar('0'+G[i]);putchar('\n');
 }
+int n,m,query[200];
+bool exist[200];
 #define N 10010
-#define M 20010
-int n,m;
-int head[N],ver[M],nxt[M],w[M];
+int head[N],ver[N<<1],nxt[N<<1],w[N<<1];
 int cnt;
 void insert(int x,int y,int z)
 {
@@ -58,86 +67,83 @@ void insert(int x,int y,int z)
 	head[x]=cnt;
 	ver[cnt]=y;
 	w[cnt]=z;
-	
+
 	nxt[++cnt]=head[y];
 	head[y]=cnt;
 	ver[cnt]=x;
 	w[cnt]=z;
 }
 bool book[N];
-int g;
-int mx[N],sze[N];
-int S;
-void calcS(int x,int f)
-{
-	S++;
-	for(int i=head[x];i;i=nxt[i])
-	{
-		if(ver[i]==f||book[ver[i]]) continue;
-		calcS(ver[i],x);
-	}
-}
-void find(int x,int f)
+int root,sum;
+int sze[N],dp[N];
+void calcG(int x,int f)
 {
 	sze[x]=1;
-	mx[x]=0;
+	dp[x]=0;
 	for(int i=head[x];i;i=nxt[i])
 	{
 		if(ver[i]==f||book[ver[i]]) continue;
-		find(ver[i],x);
+		calcG(ver[i],x);
 		sze[x]+=sze[ver[i]];
-		mx[x]=max(mx[x],sze[ver[i]]);
- 	}
- 	mx[x]=max(mx[x],S-sze[x]);
- 	if(mx[x]<mx[g]||!mx[g]) g=x;
+		dp[x]=max(dp[x],sze[ver[i]]);
+	}
+	dp[x]=max(dp[x],sum-sze[x]);
+	if(dp[x]<dp[root]) root=x;
 }
-void calcG(int x)
+int stac[N],top;
+int dis[N];
+void dfs(int x,int f)
 {
-	S=0;
-	g=0;
-	calcS(x,0);
-	mx[0]=n;
-	find(x,0);
-}
-int ans[10001000];
-int d[N],dcnt;
-void dfs(int x,int f,int len)
-{
-	d[++dcnt]=x;
+	stac[++top]=dis[x];
 	for(int i=head[x];i;i=nxt[i])
 	{
-		if(book[ver[i]]||ver[i]==f) continue;
-		dfs(ver[i],x,len+w[i]);
+		if(ver[i]==f||book[ver[i]]) continue;
+		dis[ver[i]]=dis[x]+w[i];
+		if(dis[ver[i]]<=10000000)dfs(ver[i],x);
 	}
 }
-void calc(int x,int L,int z)
+int change[N],p;
+bool judge[10000010];
+void calc(int x)
 {
-	dcnt=0;
-	dfs(x,0,L);
-	for(int i=1;i<=dcnt;i++)
+	p=0;
+	for(int i=head[x];i;i=nxt[i])
 	{
-		for(int j=i+1;j<=dcnt;j++)
+		if(book[ver[i]]) continue;
+		top=0;
+		dis[ver[i]]=w[i];
+		dfs(ver[i],x);
+
+		for(int j=top;j>0;j--)
 		{
-			ans[d[i]+d[j]]+=z;
+			for(int k=1;k<=m;k++)
+			{
+				if(query[k]>=stac[j]&&query[k]-stac[j]<=10000000)
+				{
+					exist[k]|=judge[query[k]-stac[j]];
+				}
+			}
+		}
+		for(int j=top;j>0;j--)
+		{
+			change[++p]=stac[j];
+			judge[stac[j]]=1;
 		}
 	}
+	for(int i=1;i<=p;i++) judge[change[i]]=0;
 }
 void solve(int x)
 {
-	calcG(x);
-	x=g;
-	debug cout<<"x="<<x<<endl;
 	book[x]=1;
-	calc(x,0,1);
+	judge[0]=1;
+	calc(x);
 	for(int i=head[x];i;i=nxt[i])
 	{
 		if(book[ver[i]]) continue;
-		calc(ver[i],w[i],-1);
-	}
-	for(int i=head[x];i;i=nxt[i])
-	{
-		if(book[ver[i]]) continue;
-		solve(ver[i]);
+		sum=sze[ver[i]];
+		dp[root=0]=10000000;
+		calcG(ver[i],0);
+		solve(root);
 	}
 }
 int main()
@@ -151,16 +157,16 @@ int main()
 		c=read();
 		insert(a,b,c);
 	}
-	solve(1);
-	for(int i=1;i<=n;i++)
-	{
-		cout<<"i="<<ans[i]<<endl;
-	}
+	for(int i=1;i<=m;i++) query[i]=read();
+	dp[root=0]=sum=n;
+	calcG(1,0);
+	solve(root);
 	for(int i=1;i<=m;i++)
 	{
-		cout<<(ans[read()]?"AYE":"NAY");
-		cout<<endl;
+		if(exist[i]) cout<<"AYE"<<endl;
+		else cout<<"NAY"<<endl;
 	}
+	
 	return 0;
 }
 

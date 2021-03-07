@@ -55,6 +55,7 @@ IL void sort(int x)
 {
 	for(int i=L[x];i<=R[x];i++) ys[i]=a[i];
 	sort(ys+L[x],ys+R[x]+1);
+//	cout<<"sort:"<<L[x]<<" "<<R[x]<<endl;
 }
 IL int count(int x,LL c)
 {
@@ -123,13 +124,13 @@ int main()
 			{
 				for(int j=x;j<=y;j++)
 				{
-					if(a[j]+sum[belong[x]]<=c) ans++;
+					if(a[j]+sum[belong[x]]>=c) ans++;
 				}
 			}
 			else
 			{
-				for(int j=x;j<=R[belong[x]];j++) if(a[j]+sum[belong[x]]<=c) ans++;
-				for(int j=L[belong[y]];j<=y;j++) if(a[j]+sum[belong[y]]<=c) ans++;
+				for(int j=x;j<=R[belong[x]];j++) if(a[j]+sum[belong[x]]>=c) ans++;
+				for(int j=L[belong[y]];j<=y;j++) if(a[j]+sum[belong[y]]>=c) ans++;
 				for(int j=belong[x]+1;j<=belong[y]-1;j++)
 				{
 					ans+=count(j,c);

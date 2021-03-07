@@ -1,3 +1,8 @@
+/**************************************************************
+ * Problem: P4178 Point divide and rule (Inclusion exclusion principle)
+ * Author: Vanilla_chan
+ * Date: 20210305 
+**************************************************************/
 #include<iostream>
 #include<algorithm>
 #include<cstdio>
@@ -15,78 +20,131 @@
 #ifdef TH
 #define debug printf("Now is %d\n",__LINE__);
 #else
-#define debug
+#define debug 
+#endif
+#ifdef ONLINE_JUDGE
+char buf[1<<23],* p1=buf,* p2=buf,obuf[1<<23],* O=obuf;
+#define getchar() (p1==p2&&(p2=(p1=buf)+fread(buf,1,1<<21,stdin),p1==p2)?EOF:*p1++)
 #endif
 using namespace std;
-int n,k;
-LL ans;
-int head[200010],nxt[200010],ver[200010],w[200010];
-int ecnt;
+
+template<class T>inline void read(T& x)
+{
+	char ch=getchar();
+	int fu;
+	while(!isdigit(ch)&&ch!='-') ch=getchar();
+	if(ch=='-') fu=-1,ch=getchar();
+	x=ch-'0';ch=getchar();
+	while(isdigit(ch)) { x=x*10+ch-'0';ch=getchar(); }
+	x*=fu;
+}
+inline int read()
+{
+	int x=0,fu=1;
+	char ch=getchar();
+	while(!isdigit(ch)&&ch!='-') ch=getchar();
+	if(ch=='-') fu=-1,ch=getchar();
+	x=ch-'0';ch=getchar();
+	while(isdigit(ch)) { x=x*10+ch-'0';ch=getchar(); }
+	return x*fu;
+}
+int G[55];
+template<class T>inline void write(T x)
+{
+	int g=0;
+	if(x<0) x=-x,putchar('-');
+	do { G[++g]=x%10;x/=10; } while(x);
+	for(int i=g;i>=1;--i)putchar('0'+G[i]);putchar('\n');
+}
+int n,m,k;
+#define N 40010
+int head[N],ver[N<<1],nxt[N<<1],w[N<<1],cnt;
 void insert(int x,int y,int z)
 {
-	nxt[++ecnt]=head[x];
-	head[x]=ecnt;
-	ver[ecnt]=y;
-	w[ecnt]=z;
-	
-	nxt[++ecnt]=head[y];
-	head[y]=ecnt;
-	ver[ecnt]=x;
-	w[ecnt]=z;
+	nxt[++cnt]=head[x];
+	head[x]=cnt;
+	ver[cnt]=y;
+	w[cnt]=z;
+
+	nxt[++cnt]=head[y];
+	head[y]=cnt;
+	ver[cnt]=x;
+	w[cnt]=z;
 }
-bool book[100010];
-int sze[100010];
-int sum,rt,son[100010];
-void weight(int x,int fa) {
-	size[x]=1;
-	son[x]=0;
-	for(int i=head[x];i;i=nxt[i]) {
-		int v=ver[i];
-		if(v==fa||book[v]) continue;
-		weight(v,x);
-		sze[x]+=sze[v];
-		if(sze[v]>son[x]) son[x]=sze[v];
-	}
-	if(sum-sze[x]>sze[son[x]]) son[x]=sum-sze[x];
-	if(son[x]<son[rt]) rt=x;
-}
-void gets(int x,int fa)
+int book[N],sze[N],dp[N];
+int sum,root;
+void getG(int x,int f)
 {
-	dis[++tot]=diss[x];
+	sze[x]=1;
+	dp[x]=0;
 	for(int i=head[x];i;i=nxt[i])
 	{
-		int v=ver[i];
-		if(vis[v]||v==fa) continue;
-		diss[v]=diss[x]+w[i];
-		gets(v,x);
+		if(ver[i]==f||book[ver[i]]) continue;
+		getG(ver[i],x);
+		sze[x]+=sze[ver[i]];
+		dp[x]=max(dp[x],sze[ver[i]]);
 	}
+	dp[x]=max(dp[x],sum-sze[x]);
+	if(dp[x]<dp[root]) root=x;
 }
-void calc(int x)
+int dis[N];
+int stac[N],top;
+void dfs(int x,int f)
 {
-	int p=0;
+	stac[++top]=dis[x];
 	for(int i=head[x];i;i=nxt[i])
 	{
-		int v=ver[i];
-		if(book[v]) continue;
-		tot=0;diss[v]=w[i];
-		gets(v,x);
-		
+		if(ver[i]==f||book[ver[i]]) continue;
+		dis[ver[i]]=dis[x]+w[i];
+		dfs(ver[i],x);
+	}
+}
+int calc(int x,int w)
+{
+	top=0,dis[x]=w,dfs(x,0);
+	sort(stac+1,stac+top+1);
+	int l=1,r=top,ans=0;
+	while(l<=r)
+	{
+		if(stac[l]+stac[r]<=k)
+		{
+			ans+=r-l;
+			l++;
+		}
+		else r--;
+	}
+	return ans;
+}
+LL ans;
+void solve(int x)
+{
+	book[x]=1;
+	ans+=calc(x,0);
+	for(int i=head[x];i;i=nxt[i])
+	{
+		if(book[ver[i]]) continue;
+		ans-=calc(ver[i],w[i]);
+		sum=sze[ver[i]];
+		dp[root=0]=n;
+		getG(ver[i],x);
+		solve(root);
 	}
 }
 int main()
 {
-//	freopen("P4178_1.in","r",stdin);
-	cin>>n;
+	n=read();
 	for(int i=1,a,b,c;i<n;i++)
 	{
-		cin>>a>>b>>c;
+		a=read();
+		b=read();
+		c=read();
 		insert(a,b,c);
 	}
-	cin>>k;
-	sum=n;
-	weight(1,0);
-	solve(rt);
-	cout<<ans;
+	k=read();
+	dp[root=0]=sum=n;
+	getG(1,0);
+	solve(root);
+	write(ans);
 	return 0;
 }
 
